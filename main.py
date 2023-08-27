@@ -1,12 +1,10 @@
 from workspace.toWork import WorkSpace
-from database.schema import create_entities
-
 
 def run_project():
     work_space = WorkSpace('/home/ubuntu/repo/phenotypic-data-warehouse/directory')
     work_space.clean_workspace()
-    work_space.start_file('dataverse_files.zip')
-    create_entities()
+    work_space.prepare_folder_files('dataverse_files.zip')
+    work_space.storage_on_database()
 
 
 # Press the green button in the gutter to run the script.
