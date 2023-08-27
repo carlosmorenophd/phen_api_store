@@ -25,6 +25,8 @@ services:
       - ./src:/home/user/src
     depends_on:
       - database
+    ports:
+      - 8080:80
     stdin_open: true
     tty: true
   adminer:
@@ -33,7 +35,7 @@ services:
     depends_on:
       - database
     ports:
-      - 8080:8080
+      - 8081:8080
     environment:
       ADMINER_DEFAULT_SERVER: database
       ADMINER_DEFAULT_USER: $DB_USER
