@@ -2,20 +2,32 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, 
 from sqlalchemy import URL
 from decouple import config
 
-url_object = URL.create(
-    'mysql+pymysql',
-    username=config('DB_USER'),
-    password=config('DB_PASS'),
-    host="127.0.0.1",
-    port=3306,
-    database=config('DB_SCHEMA'),
-)
 
-engine = create_engine(url_object)
-meta = MetaData()
+# url_object = URL.create(
+#     'mysql+pymysql',
+#     username=config('DB_USER'),
+#     password=config('DB_PASS'),
+#     host="127.0.0.1",
+#     port=3306,
+#     database=config('DB_SCHEMA'),
+# )
+#
+# engine = create_engine(url_object)
+def get_connection():
+    url_object = URL.create(
+        'mysql+pymysql',
+        username=config('DB_USER'),
+        password=config('DB_PASS'),
+        host="127.0.0.1",
+        port=3306,
+        database=config('DB_SCHEMA'),
+    )
+    return create_engine(url_object)
 
 
 def create_entities():
+    engine = get_connection()
+    meta = MetaData()
     Table(
         'web_files', meta,
         Column('id', Integer, primary_key=True),

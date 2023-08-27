@@ -1,5 +1,6 @@
 from workspace.toWork import WorkSpace
 
+
 def run_project():
     work_space = WorkSpace('/home/ubuntu/repo/phenotypic-data-warehouse/directory')
     work_space.clean_workspace()
