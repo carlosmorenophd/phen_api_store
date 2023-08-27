@@ -1,7 +1,6 @@
 import os.path
 import pandas as pd
-
-from database.schema import get_connection
+from database.schema import insert_location
 
 
 def save_all_files(path):
@@ -26,6 +25,7 @@ def save_csv_file(file_name):
                     dictio_to_save[column['name']] = column['value']
             array_dictionary.append(dictio_to_save)
         print(array_dictionary)
+        insert_location(array_dictionary)
     else:
         raise FileNotFoundError('File to save into database do not exist')
 

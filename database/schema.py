@@ -1,18 +1,8 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, ForeignKey, Float
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, ForeignKey, Float, Identity
 from sqlalchemy import URL
 from decouple import config
 
 
-# url_object = URL.create(
-#     'mysql+pymysql',
-#     username=config('DB_USER'),
-#     password=config('DB_PASS'),
-#     host="127.0.0.1",
-#     port=3306,
-#     database=config('DB_SCHEMA'),
-# )
-#
-# engine = create_engine(url_object)
 def get_connection():
     url_object = URL.create(
         'mysql+pymysql',
@@ -54,7 +44,7 @@ def create_entities():
     # Find this file and load
     Table(
         'locations', meta,
-        Column('id', Integer, primary_key=True),
+        Column('id', Integer,Identity(start=42, cycle=True) ,primary_key=True),
         Column('location_number', Integer),
         Column('country_location', String(600)),
         Column('description', String(600)),
@@ -88,3 +78,25 @@ def create_entities():
     )
 
     meta.create_all(engine)
+
+
+def insert_location(array_dictionary):
+    conn = get_connection().connect()
+    meta = MetaData()
+    locations = Table(
+        'locations', meta,
+        Column('id', Integer, primary_key=True),
+        Column('location_number', Integer),
+        Column('country_location', String(600)),
+        Column('description', String(600)),
+        Column('institute_name', String(600)),
+        Column('cooperator', String(600)),
+        Column('latitude', String(10)),
+        Column('latitude_degrees', Integer),
+        Column('latitude_minutes', Integer),
+        Column('longitude', String(10)),
+        Column('longitude_degrees', Integer),
+        Column('longitude_minutes', Integer),
+        Column('altitude', Integer),
+    )
+    conn.execute(locations.insert(), array_dictionary)
