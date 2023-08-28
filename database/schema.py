@@ -18,6 +18,7 @@ class Database:
         )
         self.engine = create_engine(url_object)
         self.metaData = MetaData()
+        self.metaData.drop_all(bind=self.engine)
         self.web_files = Table(
             'web_files', self.metaData,
             Column('id', Integer, primary_key=True),
@@ -27,6 +28,7 @@ class Database:
             'traits', self.metaData,
             Column('id', Integer, primary_key=True),
             Column('name', String(300)),
+            Column('trait_number', Integer),
             Column('description', String(500)),
             Column('co_trait_name', String(200)),
             Column('variable_name', String(200)),
@@ -85,3 +87,8 @@ class Database:
             print(result)
             conn.commit()
 
+    def insert_genotypes(self, array_dictionary):
+        with self.engine.connect() as conn:
+            result = conn.execute(self.genotypes.insert(), array_dictionary)
+            print(result)
+            conn.commit()
