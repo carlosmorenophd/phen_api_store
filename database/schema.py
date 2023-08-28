@@ -18,9 +18,14 @@ class Database:
         )
         self.engine = create_engine(url_object)
         self.metaData = MetaData()
-        self.metaData.drop_all(bind=self.engine)
+
         self.web_files = Table(
             'web_files', self.metaData,
+            Column('id', Integer, primary_key=True),
+            Column('name', String(300)),
+        )
+        self.trails = Table(
+            'trails', self.metaData,
             Column('id', Integer, primary_key=True),
             Column('name', String(300)),
         )
@@ -46,7 +51,7 @@ class Database:
         # Find this file and load
         self.locations = Table(
             'locations', self.metaData,
-            Column('id', Integer, Identity(start=42, cycle=True), primary_key=True),
+            Column('id', Integer, primary_key=True),
             Column('location_number', Integer),
             Column('country_location', String(600)),
             Column('description', String(600)),
