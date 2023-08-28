@@ -1,12 +1,13 @@
 from .pathDirectory import PathDirectory
 from .compressFile import unzip_file, extract_all_gz
-from database.schema import create_entities
-from database.xlsToDatabase import save_all_files
+from database.schema import Database
+from database.xlsToDatabase import get_locations
 
 
 class WorkSpace:
     def __init__(self, path):
         self.pathDirectory = PathDirectory(home=path)
+        self.database = Database()
 
     def clean_workspace(self):
         self.pathDirectory.clean_work_directory()
@@ -18,5 +19,4 @@ class WorkSpace:
         extract_all_gz(destiny_folder)
 
     def storage_on_database(self):
-        create_entities()
-        save_all_files(self.pathDirectory.get_work_directory())
+        self.database.insert_location(get_locations(self.pathDirectory.get_work_directory()))

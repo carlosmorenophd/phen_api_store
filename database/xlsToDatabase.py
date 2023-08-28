@@ -1,16 +1,11 @@
 import os.path
 import pandas as pd
-from database.schema import insert_location
 
 
-def save_all_files(path):
-    # Save file location
+def get_locations(path):
     csv_location = 'location.csv'
     os.rename(os.path.join(path, '51ST IDYN_Loc_data.xls'), os.path.join(path, csv_location))
-    save_csv_file(file_name=os.path.join(path, csv_location))
-
-
-def save_csv_file(file_name):
+    file_name = os.path.join(path, csv_location)
     if os.path.isfile(file_name):
         print(file_name)
         csv_data = pd.read_csv(file_name, delimiter='\t', engine='python', header=None, )
@@ -25,7 +20,7 @@ def save_csv_file(file_name):
                     dictio_to_save[column['name']] = column['value']
             array_dictionary.append(dictio_to_save)
         print(array_dictionary)
-        insert_location(array_dictionary)
+        return array_dictionary
     else:
         raise FileNotFoundError('File to save into database do not exist')
 
