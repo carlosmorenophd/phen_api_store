@@ -1,7 +1,7 @@
 from .pathDirectory import PathDirectory
 from .compressFile import unzip_file, extract_all_gz
 from database.schema import Database
-from database.xlsToDatabase import get_locations, get_genotypes
+from database.xlsToDatabase import get_locations, get_genotypes, get_raw_collections
 
 
 class WorkSpace:
@@ -21,3 +21,4 @@ class WorkSpace:
     def storage_on_database(self):
         self.database.insert_location(get_locations(self.pathDirectory.get_work_directory()))
         self.database.insert_genotypes(get_genotypes(self.pathDirectory.get_work_directory()))
+        self.database.insert_raw(get_raw_collections(self.pathDirectory.get_work_directory()))
