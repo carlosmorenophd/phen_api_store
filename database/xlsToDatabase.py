@@ -101,8 +101,6 @@ def convert_head_csv_to_column(entity, head_csv, value):
             return {'name': 'locations.number', 'value': int(value)}
         elif head_csv == 'Country':
             return {'name': 'locations.country', 'value': str(value)}
-        elif head_csv == 'Country':
-            return {'name': 'locations.country', 'value': str(value)}
         elif head_csv == 'Loc_desc':
             return {'name': 'locations.description', 'value': str(value)}
         elif head_csv == 'Cycle':
@@ -116,7 +114,7 @@ def convert_head_csv_to_column(entity, head_csv, value):
         elif head_csv == 'Trait No':
             return {'name': 'traits.trait_number', 'value': str(value)}
         elif head_csv == 'Trait name':
-            return {'name': 'genotypes.cross_name', 'value': str(value)}
+            return {'name': 'traits.name', 'value': str(value)}
         elif head_csv == 'Gen_no':
             return {'name': 'gen_number', 'value': int(value)}
         elif head_csv == 'Rep':

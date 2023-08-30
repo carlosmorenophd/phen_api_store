@@ -17,25 +17,25 @@ class Database:
             database=config('DB_SCHEMA'),
         )
         self.engine = create_engine(url_object)
-        self.metaData = MetaData()
+        self.meta_data = MetaData()
 
         self.web_files = Table(
-            'web_files', self.metaData,
+            'web_files', self.meta_data,
             Column('id', Integer, primary_key=True),
             Column('name', String(300)),
         )
         self.trails = Table(
-            'trails', self.metaData,
+            'trails', self.meta_data,
             Column('id', Integer, primary_key=True),
             Column('name', String(300)),
         )
         self.units = Table(
-            'units', self.metaData,
+            'units', self.meta_data,
             Column('id', Integer, primary_key=True),
             Column('name', String(300)),
         )
         self.traits = Table(
-            'traits', self.metaData,
+            'traits', self.meta_data,
             Column('id', Integer, primary_key=True),
             Column('name', String(300)),
             Column('number', Integer),
@@ -46,7 +46,7 @@ class Database:
         )
         # Find this file and load
         self.genotypes = Table(
-            'genotypes', self.metaData,
+            'genotypes', self.meta_data,
             Column('id', Integer, primary_key=True),
             Column('c_id', Integer),
             Column('s_id', Integer),
@@ -55,7 +55,7 @@ class Database:
         )
         # Find this file and load
         self.locations = Table(
-            'locations', self.metaData,
+            'locations', self.meta_data,
             Column('id', Integer, primary_key=True),
             Column('number', Integer),
             Column('country', String(600)),
@@ -71,12 +71,12 @@ class Database:
             Column('altitude', Integer),
         )
         self.raw_collections = Table(
-            'raw_collections', self.metaData,
+            'raw_collections', self.meta_data,
             Column('id', Integer, primary_key=True),
-            Column('trail_id', Integer, ForeignKey("trails.id"), nullable=False),
-            Column('trait_id', Integer, ForeignKey("traits.id"), nullable=False),
-            Column('genotype_id', Integer, ForeignKey("genotypes.id"), nullable=False),
-            Column('location_id', Integer, ForeignKey("locations.id"), nullable=False),
+            Column('trails_id', Integer, ForeignKey("trails.id"), nullable=False),
+            Column('traits_id', Integer, ForeignKey("traits.id"), nullable=False),
+            Column('genotypes_id', Integer, ForeignKey("genotypes.id"), nullable=False),
+            Column('locations_id', Integer, ForeignKey("locations.id"), nullable=False),
             Column('occurrence', Integer),
             Column('cycle', String(4)),
             Column('gen_number', Integer),
@@ -85,7 +85,7 @@ class Database:
             Column('value', String(100)),
         )
 
-        self.metaData.create_all(self.engine)
+        self.meta_data.create_all(self.engine)
 
     def insert_location(self, array_dictionary):
         with self.engine.connect() as conn:
@@ -101,9 +101,19 @@ class Database:
 
     def insert_raw(self, array_dictionary):
         for item in array_dictionary:
-            item['trail_id'] = self.insert_raw_trail( trail_name=item.pop('trails.name'))
-            print(item)
-            return '1'
+            item['trails_id'] = self.insert_raw_trail(trail_name=item.pop('trails.name'))
+            item['locations_id'] = self.insert_raw_location(
+                location=dict(number=item.pop('locations.number'), country=item.pop('locations.country'),
+                              description=item.pop('locations.description')))
+            item['genotypes_id'] = self.insert_raw_genotype(
+                genotype=dict(c_id=item.pop('genotypes.c_id'), s_id=item.pop('genotypes.s_id'),
+                              cross_name=item.pop('genotypes.cross_name')))
+            item['traits_id'] = self.insert_raw_trait(
+                trait=dict(number=item.pop('traits.trait_number'), name=item.pop('traits.name')))
+            item['units_id'] = self.insert_raw_unit(unit=dict(name=item.pop('units.name')))
+            with self.engine.connect() as conn:
+                conn.execute(self.raw_collections.insert(), item)
+                conn.commit()
 
     def insert_raw_trail(self, trail_name):
         with self.engine.connect() as conn:
@@ -118,3 +128,55 @@ class Database:
                 return result.id
         return 0
 
+    def insert_raw_location(self, location):
+        with self.engine.connect() as conn:
+            stmt = select(self.locations.c.id).where(location['number'] == self.locations.c.number)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.locations.insert(), location)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
+    def insert_raw_genotype(self, genotype: dict) -> int:
+        with self.engine.connect() as conn:
+            stmt = select(self.genotypes.c.id).where(
+                genotype['s_id'] == self.genotypes.c.s_id and genotype['c_id'] == self.genotypes.c.c_id)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.genotypes.insert(), genotype)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
+    def insert_raw_trait(self, trait: dict) -> int:
+        with self.engine.connect() as conn:
+            stmt = select(self.traits.c.id).where(trait['number'] == self.traits.c.number)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.traits.insert(), trait)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
+    def insert_raw_unit(self, unit: dict) -> int:
+        with self.engine.connect() as conn:
+            stmt = select(self.units.c.id).where(unit['name'] == self.units.c.name)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.units.insert(), unit)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0

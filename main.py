@@ -2,7 +2,7 @@ from workspace.toWork import WorkSpace
 
 
 def run_project():
-    work_space = WorkSpace('/home/ubuntu/repo/phenotypic-data-warehouse/directory')
+    work_space = WorkSpace('/home/yeiden/repo/phenotypic-data-warehouse/directory')
     work_space.clean_workspace()
     work_space.prepare_folder_files('dataverse_files.zip')
     work_space.storage_on_database()
