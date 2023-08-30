@@ -1,9 +1,0 @@
-{
-    "cSpell.ignoreWords": [
-        "cimmyt",
-        "dataverse",
-        "fastapi",
-        "pymysql",
-        "sqlalchemy"
-    ]
-}
