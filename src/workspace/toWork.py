@@ -21,5 +21,5 @@ class WorkSpace:
     def storage_on_database(self):
         self.database.insert_location(get_locations(self.path_directory.get_work_directory()))
         self.database.insert_genotypes(get_genotypes(self.path_directory.get_work_directory()))
-        # self.database.insert_raw(get_raw_collections(self.path_directory.get_work_directory()))
+        self.database.insert_raw(get_raw_collections(self.path_directory.get_work_directory()))
         self.database.update_trait(get_trait_details(self.path_directory.get_work_directory()))

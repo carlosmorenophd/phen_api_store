@@ -85,7 +85,7 @@ class Database:
             Column('traitDbId', String(50), ),
             Column('name', String(200), ),
             Column('class', String(200), ),
-            Column('description', String(500), ),
+            Column('description', String(1000), ),
         )
 
         self.method_ontologies = Table(
@@ -94,7 +94,7 @@ class Database:
             Column('methodDbId', String(50), ),
             Column('name', String(200), ),
             Column('class', String(200), ),
-            Column('description', String(500), ),
+            Column('description', String(1000), ),
             Column('formula', String(500), ),
         )
 
@@ -230,9 +230,28 @@ class Database:
                 return result.id
         return 0
 
-    def update_trait(self, traits):
+    def update_trait(self, entities):
         with self.engine.connect() as conn:
-            for trait in traits:
+            for entity in entities:
+                variable_id = 0
+                if 'crop_ontologies' in entity:
+                    crop_id = self.insert_trait_crop(crop=entity['crop_ontologies'])
+                    if crop_id != 0:
+                        trait_ontologies = entity['trait_ontologies']
+                        trait_ontologies['crop_ontologies_id'] = crop_id
+                        trait_id = self.insert_trait_trait(trait=trait_ontologies)
+                        if trait_id != 0:
+                            method_id = self.insert_trait_method(entity=entity['method_ontologies'])
+                            scale_id = self.insert_trait_scale(entity=entity['scale_ontologies'])
+                            if method_id != 0 and scale_id != 0:
+                                variable = entity['variable_ontologies']
+                                variable['trait_ontologies_id'] = trait_id
+                                variable['method_ontologies_id'] = method_id
+                                variable['scale_ontologies_id'] = scale_id
+                                variable_id = self.insert_trait_variable(entity=variable)
+                trait = entity['traits']
+                if variable_id != 0:
+                    trait['variable_ontologies_id'] = variable_id
                 stmt = select(self.traits.c.id).where(trait['name'] == self.traits.c.name)
                 result = conn.execute(stmt).first()
                 if result:
@@ -243,3 +262,73 @@ class Database:
                     )
                     conn.execute(stmt)
                     conn.commit()
+
+    def insert_trait_crop(self, crop: dict) -> int:
+        with self.engine.connect() as conn:
+            stmt = select(self.crop_ontologies.c.id).where(crop['ontologyDbId'] == self.crop_ontologies.c.ontologyDbId)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.crop_ontologies.insert(), crop)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
+    def insert_trait_trait(self, trait: dict) -> int:
+        with self.engine.connect() as conn:
+            stmt = select(self.trait_ontologies.c.id).where(
+                trait['traitDbId'] == self.trait_ontologies.c.traitDbId)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.trait_ontologies.insert(), trait)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
+    def insert_trait_method(self, entity: dict) -> int:
+        with self.engine.connect() as conn:
+            stmt = select(self.method_ontologies.c.id).where(
+                entity['methodDbId'] == self.method_ontologies.c.methodDbId)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.method_ontologies.insert(), entity)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
+    def insert_trait_scale(self, entity: dict) -> int:
+        with self.engine.connect() as conn:
+            stmt = select(self.scale_ontologies.c.id).where(
+                entity['scaleDbId'] == self.scale_ontologies.c.scaleDbId)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.scale_ontologies.insert(), entity)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
+    def insert_trait_variable(self, entity):
+        with self.engine.connect() as conn:
+            stmt = select(self.variable_ontologies.c.id).where(
+                entity['observationVariableDbId'] == self.variable_ontologies.c.observationVariableDbId)
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+            conn.execute(self.variable_ontologies.insert(), entity)
+            conn.commit()
+            result = conn.execute(stmt).first()
+            if result:
+                return result.id
+        return 0
+
