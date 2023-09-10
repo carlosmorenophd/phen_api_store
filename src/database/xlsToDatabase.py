@@ -1,5 +1,6 @@
 import os.path
 import pandas as pd
+import requests
 
 
 def get_locations(path):
@@ -35,13 +36,63 @@ def get_raw_collections(path):
         raise FileNotFoundError('Filing to save file or not exist it')
 
 
+def get_trait_details(path):
+    file_name = os.path.join(path, '51ST IDYN.xls')
+    if os.path.isfile(file_name):
+        csv_data = pd.read_excel(file_name, sheet_name=None)
+        entities = []
+        for key in csv_data:
+            dic_general = {}
+            dic_trait = {}
+            if ':' in csv_data[key].iloc[2, 3]:
+                str_temp = csv_data[key].iloc[2, 3].split(':')[1]
+                if '  ' in str_temp:
+                    dic_trait['name'] = str_temp.split('  ')[0].strip()
+                else:
+                    dic_trait['name'] = str_temp.strip()
+            if ':' in csv_data[key].iloc[3, 3]:
+                dic_trait['co_trait_name'] = csv_data[key].iloc[3, 3].split(':')[1].strip()
+            if ':' in csv_data[key].iloc[4, 3]:
+                dic_trait['variable_name'] = csv_data[key].iloc[4, 3].split(':')[1].strip()
+            if ' : ' in csv_data[key].iloc[5, 3]:
+                dic_trait['co_id'] = csv_data[key].iloc[5, 3].split(' : ')[1].strip()
+            dic_general["traits"] = dic_trait
+            if 'co_id' in dic_trait and dic_trait['co_id'] != '':
+                url = 'https://cropontology.org/brapi/v1/variables/%s' % dic_trait['co_id']
+                r = requests.get(url=url, headers={'Accept': 'application/json'})
+                dic_general['crop_ontologies'] = {'ontologyDbId': r.json()['result']['ontologyDbId'],
+                                                  "name": r.json()['result']['ontologyName']}
+                dic_general['trait_ontologies'] = {'traitDbId': r.json()['result']['trait']['traitDbId'],
+                                                   "name": r.json()['result']['trait']['name'],
+                                                   "class": r.json()['result']['trait']['class'],
+                                                   "description": r.json()['result']['trait']['description']}
+                dic_general['method_ontologies'] = {'methodDbId': r.json()['result']['method']['methodDbId'],
+                                                    "name": r.json()['result']['method']['name'],
+                                                    "class": r.json()['result']['method']['class'],
+                                                    "description": r.json()['result']['method']['description'],
+                                                    "formula": r.json()['result']['method']['formula']}
+                dic_general['scale_ontologies'] = {'scaleDbId': r.json()['result']['scale']['scaleDbId'],
+                                                   "name": r.json()['result']['scale']['name'],
+                                                   "dataType": r.json()['result']['scale']['dataType'],
+                                                   "validValues": str(r.json()['result']['scale']['validValues'])}
+                dic_general['variable_ontologies'] = {
+                    'observationVariableDbId': r.json()['result']['observationVariableDbId'],
+                    "name": r.json()['result']['name'],
+                    "synonyms": r.json()['result']['synonyms'],
+                    "growthStage": r.json()['result']['growthStage']}
+            entities.append(dic_general)
+        return entities
+    else:
+        raise FileNotFoundError('Filing to save file or not exist it')
+
+
 def get_dictionary_by_entity(entity, head, csv_dictionary):
     array_dictionary = []
     for key in csv_dictionary:
         dictio_to_save = {}
-        for headKey in head:
-            column = convert_head_csv_to_column(entity, head_csv=head[headKey],
-                                                value=csv_dictionary[key][headKey])
+        for head_key in head:
+            column = convert_head_csv_to_column(entity, head_csv=head[head_key],
+                                                value=csv_dictionary[key][head_key])
             if column['name'] != 'None':
                 dictio_to_save[column['name']] = column['value']
         array_dictionary.append(dictio_to_save)
