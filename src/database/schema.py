@@ -43,6 +43,7 @@ class Database:
             Column('co_trait_name', String(200)),
             Column('variable_name', String(200)),
             Column('co_id', String(400)),
+            Column('variable_ontologies_id', Integer, ForeignKey("variable_ontologies.id"), nullable=True),
         )
         # Find this file and load
         self.genotypes = Table(
@@ -70,6 +71,54 @@ class Database:
             Column('longitude_minutes', Integer),
             Column('altitude', Integer),
         )
+        self.crop_ontologies = Table(
+            'crop_ontologies', self.meta_data,
+            Column('id', Integer, primary_key=True),
+            Column('ontologyDbId', String(50), ),
+            Column('name', String(200), ),
+        )
+
+        self.trait_ontologies = Table(
+            'trait_ontologies', self.meta_data,
+            Column('id', Integer, primary_key=True),
+            Column('crop_ontologies_id', Integer, ForeignKey("crop_ontologies.id"), nullable=False),
+            Column('traitDbId', String(50), ),
+            Column('name', String(200), ),
+            Column('class', String(200), ),
+            Column('description', String(500), ),
+        )
+
+        self.method_ontologies = Table(
+            'method_ontologies', self.meta_data,
+            Column('id', Integer, primary_key=True),
+            Column('methodDbId', String(50), ),
+            Column('name', String(200), ),
+            Column('class', String(200), ),
+            Column('description', String(500), ),
+            Column('formula', String(500), ),
+        )
+
+        self.scale_ontologies = Table(
+            'scale_ontologies', self.meta_data,
+            Column('id', Integer, primary_key=True),
+            Column('scaleDbId', String(50), ),
+            Column('name', String(200), ),
+            Column('dataType', String(200), ),
+            Column('validValues', String(1000), ),
+        )
+
+        self.variable_ontologies = Table(
+            'variable_ontologies', self.meta_data,
+            Column('id', Integer, primary_key=True),
+            Column('trait_ontologies_id', Integer, ForeignKey("trait_ontologies.id"), nullable=False),
+            Column('method_ontologies_id', Integer, ForeignKey("method_ontologies.id"), nullable=False),
+            Column('scale_ontologies_id', Integer, ForeignKey("scale_ontologies.id"), nullable=False),
+            Column('observationVariableDbId', String(50), ),
+            Column('name', String(200), ),
+            Column('synonyms', String(500), ),
+            Column('growthStage', String(500), ),
+        )
+
         self.raw_collections = Table(
             'raw_collections', self.meta_data,
             Column('id', Integer, primary_key=True),
