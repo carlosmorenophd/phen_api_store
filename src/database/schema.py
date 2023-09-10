@@ -233,22 +233,7 @@ class Database:
     def update_trait(self, entities):
         with self.engine.connect() as conn:
             for entity in entities:
-                variable_id = 0
-                if 'crop_ontologies' in entity:
-                    crop_id = self.insert_trait_crop(crop=entity['crop_ontologies'])
-                    if crop_id != 0:
-                        trait_ontologies = entity['trait_ontologies']
-                        trait_ontologies['crop_ontologies_id'] = crop_id
-                        trait_id = self.insert_trait_trait(trait=trait_ontologies)
-                        if trait_id != 0:
-                            method_id = self.insert_trait_method(entity=entity['method_ontologies'])
-                            scale_id = self.insert_trait_scale(entity=entity['scale_ontologies'])
-                            if method_id != 0 and scale_id != 0:
-                                variable = entity['variable_ontologies']
-                                variable['trait_ontologies_id'] = trait_id
-                                variable['method_ontologies_id'] = method_id
-                                variable['scale_ontologies_id'] = scale_id
-                                variable_id = self.insert_trait_variable(entity=variable)
+                variable_id = self.update_ontology(entity)
                 trait = entity['traits']
                 if variable_id != 0:
                     trait['variable_ontologies_id'] = variable_id
@@ -262,6 +247,24 @@ class Database:
                     )
                     conn.execute(stmt)
                     conn.commit()
+
+    def update_ontology(self, entity: dict) -> int:
+        if 'crop_ontologies' in entity:
+            crop_id = self.insert_trait_crop(crop=entity['crop_ontologies'])
+            if crop_id != 0:
+                trait_ontologies = entity['trait_ontologies']
+                trait_ontologies['crop_ontologies_id'] = crop_id
+                trait_id = self.insert_trait_trait(trait=trait_ontologies)
+                if trait_id != 0:
+                    method_id = self.insert_trait_method(entity=entity['method_ontologies'])
+                    scale_id = self.insert_trait_scale(entity=entity['scale_ontologies'])
+                    if method_id != 0 and scale_id != 0:
+                        variable = entity['variable_ontologies']
+                        variable['trait_ontologies_id'] = trait_id
+                        variable['method_ontologies_id'] = method_id
+                        variable['scale_ontologies_id'] = scale_id
+                        return self.insert_trait_variable(entity=variable)
+        return 0
 
     def insert_trait_crop(self, crop: dict) -> int:
         with self.engine.connect() as conn:
