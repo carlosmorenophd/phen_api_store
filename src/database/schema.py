@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, ForeignKey, Float, Identity
-from sqlalchemy import URL, select
+from sqlalchemy import URL, select, update
 from decouple import config
 import logging
 
@@ -229,3 +229,17 @@ class Database:
             if result:
                 return result.id
         return 0
+
+    def update_trait(self, traits):
+        with self.engine.connect() as conn:
+            for trait in traits:
+                stmt = select(self.traits.c.id).where(trait['name'] == self.traits.c.name)
+                result = conn.execute(stmt).first()
+                if result:
+                    stmt = (
+                        update(self.traits).
+                        where(self.traits.c.id == result.id).
+                        values(trait)
+                    )
+                    conn.execute(stmt)
+                    conn.commit()

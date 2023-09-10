@@ -35,13 +35,38 @@ def get_raw_collections(path):
         raise FileNotFoundError('Filing to save file or not exist it')
 
 
+def get_trait_details(path):
+    file_name = os.path.join(path, '51ST IDYN.xls')
+    if os.path.isfile(file_name):
+        csv_data = pd.read_excel(file_name, sheet_name=None)
+        entities = []
+        for key in csv_data:
+            dic_trait = {}
+            if ':' in csv_data[key].iloc[2, 3]:
+                str_temp = csv_data[key].iloc[2, 3].split(':')[1]
+                if '  ' in str_temp:
+                    dic_trait['name'] = str_temp.split('  ')[0].strip()
+                else:
+                    dic_trait['name'] = str_temp.strip()
+            if ':' in csv_data[key].iloc[3, 3]:
+                dic_trait['co_trait_name'] = csv_data[key].iloc[3, 3].split(':')[1].strip()
+            if ':' in csv_data[key].iloc[4, 3]:
+                dic_trait['variable_name'] = csv_data[key].iloc[4, 3].split(':')[1].strip()
+            if ' : ' in csv_data[key].iloc[5, 3]:
+                dic_trait['co_id'] = csv_data[key].iloc[5, 3].split(' : ')[1].strip()
+            entities.append(dic_trait)
+        return entities
+    else:
+        raise FileNotFoundError('Filing to save file or not exist it')
+
+
 def get_dictionary_by_entity(entity, head, csv_dictionary):
     array_dictionary = []
     for key in csv_dictionary:
         dictio_to_save = {}
-        for headKey in head:
-            column = convert_head_csv_to_column(entity, head_csv=head[headKey],
-                                                value=csv_dictionary[key][headKey])
+        for head_key in head:
+            column = convert_head_csv_to_column(entity, head_csv=head[head_key],
+                                                value=csv_dictionary[key][head_key])
             if column['name'] != 'None':
                 dictio_to_save[column['name']] = column['value']
         array_dictionary.append(dictio_to_save)
