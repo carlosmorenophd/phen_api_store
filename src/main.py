@@ -1,4 +1,4 @@
-from workspace.toWork import WorkSpace
+from src.workspace import WorkSpace
 
 
 def run_project():
