@@ -1,0 +1,17 @@
+'1', '1', 'CO_321:0000162', 'Puntuación agronómica', 'Agronómico', 'Calificación de los atributos agronómicos generales y la salud de las plantas.'
+'2', '1', 'CO_321:0000007', 'Tiempo de espiga', 'Fenológico', 'El tiempo de espiga se extiende desde el momento en que emerge la punta de la espiga de la vaina de la hoja bandera hasta que la espiga ha emergido por completo pero todavía no ha empezado a florecer.'
+'3', '1', 'CO_321:0000022', 'Tiempo de madurez', 'Fenológico', 'El tiempo de madurez comienza en la etapa de masa dura (ds87) a menudo llamada madurez fisiológica.'
+'4', '1', 'CO_321:0000939', 'Severidad del oídio', 'Estrés biótico', 'Severidad del oídio en las plantas causada por el agente Blumeria graminis (Erysiphe graminis) f. sp. tritici.'
+'5', '1', 'CO_321:0000147', 'Sedimentación de SDS de harina integral', 'Calidad', 'Prueba de la calidad de la harina integral mediante sedimentación de SDS, una prueba que estima la calidad general de la proteína del gluten.'
+'6', '1', 'CO_321:0000038', 'Número de granos por espiga', 'Agronómico', 'Número de granos por espiga'.
+'7', '1', 'CO_321:0000013', 'Rendimiento de grano', 'Agronómico', 'Cantidad (peso) de granos que se cosecharon.'
+'8', '1', 'CO_321:0000167', 'Incidencia de acame', 'Agronómico', 'Indica incidencia de plantas acameadas.'
+'9', '1', 'CO_321:0000012', 'Contenido de humedad del grano', 'Agronómico', 'Contenido de humedad del grano.'
+'10', '1', 'CO_321:0000688', 'Coeficiente de infección de la roya del tallo', 'Estrés biótico', 'Incidencia/severidad/respuesta de la roya del tallo (roya negra) en las plantas causada por el agente Puccinia graminis f. sp. tritici.'
+'11', '1', 'CO_321:0000020', 'Altura de la planta', 'Agronómico', 'Altura de la planta desde el suelo hasta la punta de la espiga, excluyendo las aristas.'
+'12', '1', 'CO_321:0000897', 'Coeficiente de infección de la roya de la hoja', 'Estrés biótico', 'Incidencia/severidad/respuesta de la roya de la hoja (roya parda) en las plantas causada por el agente Puccinia recondita.'
+'13', '1', 'CO_321:0000689', 'Coeficiente de infección de la roya rayada', 'Estrés biótico', 'Incidencia/severidad/respuesta de la roya rayada (roya amarilla) en las plantas causada por el agente Puccinia striiformis f. sp. tritici.'
+'14', '1', 'CO_321:0000160', 'Índice de sedimentación SDS de la harina', 'Calidad', 'Es el resultado de dividir el volumen de sedimentación entre el contenido de proteína de la harina.'
+'15', '1', 'CO_321:0000714', 'Severidad de la mancha por Septoria', 'Estrés biótico', 'Severidad de la mancha por Septoria en las plantas causada por el agente Septoria especie.'
+'16', '1', 'CO_321:0000056', 'Longitud de la espiga', 'Morfológico', 'Longitud de la espiga'.
+'17', '1', 'CO_321:0000025', 'Peso del grano', 'Agronómico', 'Peso del grano generalmente expresado como peso de uno, cien, doscientos o mil granos.'
