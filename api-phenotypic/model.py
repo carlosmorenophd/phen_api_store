@@ -1,27 +1,37 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, Identity
-from sqlalchemy.orm import relationship
-from database import Base
+import peewee
+
+from database import db
 
 
-class WebFile(Base):
-    __tablename__ = "WebFile"
-    id = Column(Integer, primary_key=True),
-    name = Column(String(300)),
+class WebFile(peewee.Model):
+    name = peewee.CharField()
+
+    class Meta:
+        database = db
 
 
-class Trail(Base):
-    __tablename__ = 'Trail'
-    id = Column(Integer, primary_key=True),
-    name = Column(String(300)),
+# class Item(peewee.Model):
+#     title = peewee.CharField(index=True)
+#     description = peewee.CharField(index=True)
+#     owner = peewee.ForeignKeyField(User, backref="items")
+
+#     class Meta:
+#         database = db
+
+class Trail(peewee.Model):
+    name = peewee.CharField(unique=True, index=True)
+
+    class Meta:
+        database = db
+
+class Unit(peewee.Model):
+    name = Column(String(300))
+
+    class Meta:
+        database = db
 
 
-class Unit(Base):
-    __tablename__ = 'Unit'
-    id = Column(Integer, primary_key=True),
-    name = Column(String(300)),
-
-
-class Trait(Base):
+class Trait(peewee.Model):
     __tablename__ = 'Trait'
     id = Column(Integer, primary_key=True),
     name = Column(String(300)),
@@ -34,7 +44,7 @@ class Trait(Base):
     variable_ontology = relationship("VariableOntology", back_populates="traits")
 
 
-class Genotype(Base):
+class Genotype(peewee.Model):
     __tablename__ = 'Genotype'
     id = Column(Integer, primary_key=True),
     c_id = Column(Integer),
@@ -43,7 +53,7 @@ class Genotype(Base):
     history = Column(String(600)),
 
 
-class Location(Base):
+class Location(peewee.Model):
     __tablename__ = 'Location'
     id = Column(Integer, primary_key=True)
     number = Column(Integer)
@@ -60,7 +70,7 @@ class Location(Base):
     altitude = Column(Integer)
 
 
-class CropOntology(Base):
+class CropOntology(peewee.Model):
     __tablename__ = 'CropOntology'
     id = Column(Integer, primary_key=True)
     ontologyDbId = Column(String(50))
@@ -68,7 +78,7 @@ class CropOntology(Base):
     trait_ontologies = relationship("TraitOntology", back_populates="crop_ontology")
 
 
-class TraitOntology(Base):
+class TraitOntology(peewee.Model):
     __tablename__ = 'TraitOntology'
     id = Column(Integer, primary_key=True)
     traitDbId = Column(String(50))
@@ -80,7 +90,7 @@ class TraitOntology(Base):
     variable_ontologies = relationship("VariableOntology", back_populates="trait_ontology")
 
 
-class MethodOntology(Base):
+class MethodOntology(peewee.Model):
     __tablename__ = 'MethodOntology'
     id = Column(Integer, primary_key=True)
     methodDbId = Column(String(50))
@@ -91,7 +101,7 @@ class MethodOntology(Base):
     variable_ontologies = relationship("VariableOntology", back_populates="method_ontology")
 
 
-class ScaleOntology(Base):
+class ScaleOntology(peewee.Model):
     __tablename__ = 'ScaleOntology'
     id = Column(Integer, primary_key=True)
     scaleDbId = Column(String(50))
@@ -101,7 +111,7 @@ class ScaleOntology(Base):
     variable_ontologies = relationship("VariableOntology", back_populates="scale_ontology")
 
 
-class VariableOntology(Base):
+class VariableOntology(peewee.Model):
     __tablename__ = 'VariableOntology'
     id = Column(Integer, primary_key=True)
     trait_ontology_id = Column(Integer, ForeignKey("TraitOntology.id"), nullable=False),
@@ -117,7 +127,7 @@ class VariableOntology(Base):
     growth_stage = Column(String(500))
 
 
-class RawCollection(Base):
+class RawCollection(peewee.Model):
     __tablename__ = 'RawCollection'
     id = Column(Integer, primary_key=True)
     trail_id = Column(Integer, ForeignKey("Trail.id"), nullable=False),

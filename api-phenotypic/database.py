@@ -1,24 +1,26 @@
 import os
 import logging
-from sqlalchemy import create_engine, URL
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+import peewee
 from dotenv import load_dotenv
+from contextvars import ContextVar
 
-load_dotenv()
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
-url_object = URL.create(
-    drivername='mysql+pymysql',
-    username=os.getenv('DB_USER'),
-    password=os.getenv('DB_PASS'),
-    host=os.getenv("DB_HOST"),
-    port=os.getenv('DB_PORT'),
-    database=os.getenv('DB_SCHEMA'),
-)
-engine = create_engine(
-    url=url_object, connect_args={"check_same_thread": False}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+DATABASE_NAME = os.getenv('DB_SCHEMA')
+db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
+db_state = ContextVar("db_state", default=db_state_default.copy())
 
-Base = declarative_base()
+
+class PeeweeConnectionState(peewee._ConnectionState):
+    def __init__(self, **kwargs):
+        super().__setattr__("_state", db_state)
+        super().__init__(**kwargs)
+
+    def __setattr__(self, name, value):
+        self._state.get()[name] = value
+
+    def __getattr__(self, name):
+        return self._state.get()[name]
+
+
+db = peewee.MySQLDatabase(DATABASE_NAME, host=os.getenv("DB_HOST"), port=os.getenv('DB_PORT'), user=os.getenv('DB_USER'), password=os.getenv('DB_PASS'))
+
+db._state = PeeweeConnectionState()
