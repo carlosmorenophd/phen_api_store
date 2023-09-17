@@ -1,4 +1,5 @@
 from typing import Any
+
 from peewee import ModelSelect
 from pydantic import BaseModel
 from pydantic.utils import GetterDict
@@ -15,8 +16,10 @@ class PeeweeGetterDict(GetterDict):
 class WebFileBase(BaseModel):
     name: str
 
+
 class WebFileCreate(WebFileBase):
     pass
+
 
 class WebFile(WebFileBase):
     id: int
@@ -29,8 +32,10 @@ class WebFile(WebFileBase):
 class TrailBase(BaseModel):
     name: str
 
+
 class TrailCreate(TrailBase):
     pass
+
 
 class Trail(TrailBase):
     id: int
@@ -43,8 +48,10 @@ class Trail(TrailBase):
 class UnitBase(BaseModel):
     name: str
 
+
 class UnitCreate(UnitBase):
     pass
+
 
 class Unit(UnitBase):
     id: int
@@ -73,7 +80,6 @@ class Trait(TraitBase):
     class Config:
         orm_mode = True
         getter_dict = PeeweeGetterDict
-
 
 
 class GenotypeBase(BaseModel):
@@ -159,7 +165,6 @@ class TraitOntology(TraitOntologyBase):
         getter_dict = PeeweeGetterDict
 
 
-
 class MethodOntologyBase(BaseModel):
     method_db_id: str
     name: str
@@ -180,7 +185,6 @@ class MethodOntology(MethodOntologyBase):
         getter_dict = PeeweeGetterDict
 
 
-
 class ScaleOntologyBase(BaseModel):
     scale_db_id: str
     name: str
@@ -198,6 +202,7 @@ class ScaleOntology(ScaleOntologyBase):
     class Config:
         orm_mode = True
         getter_dict = PeeweeGetterDict
+
 
 class VariableOntologyBase(BaseModel):
     name: str
@@ -222,15 +227,13 @@ class VariableOntology(VariableOntologyBase):
         getter_dict = PeeweeGetterDict
 
 
-
-
 class RawCollectionBase(BaseModel):
     occurrence: int
     cycle: str
-    gen_number:int
+    gen_number: int
     repetition: int
     sub_block: int
-    value_data:str
+    value_data: str
 
 
 class RawCollectionCreate(RawCollectionBase):
