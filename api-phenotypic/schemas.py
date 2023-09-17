@@ -1,136 +1,249 @@
-from typing import Union
+from typing import Any, List, Union
+from peewee import ModelSelect
 from pydantic import BaseModel
+from pydantic.utils import GetterDict
+
+
+class PeeweeGetterDict(GetterDict):
+    def get(self, key: Any, default: Any = None):
+        res = getattr(self._obj, key, default)
+        if isinstance(res, ModelSelect):
+            return list(res)
+        return res
 
 
 class WebFileBase(BaseModel):
-    name: Union[str, None]
+    name: str
 
 class WebFileCreate(WebFileBase):
-    name: str
+    pass
 
 class WebFile(WebFileBase):
     id: int
-    name: str
 
     class Config:
         orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 
 class TrailBase(BaseModel):
+    name: str
+
+class TrailCreate(TrailBase):
+    pass
+
+class Trail(TrailBase):
     id: int
-    name: Union[str,None]
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 
 class UnitBase(BaseModel):
+    name: str
+
+class UnitCreate(UnitBase):
+    pass
+
+class Unit(UnitBase):
     id: int
-    name: Union[str,None]
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 
 class TraitBase(BaseModel):
+    name: str
+    number: str
+    description: str
+    co_trait_name: str
+    variable_name: str
+    co_id: str
+
+
+class TraitCreate(TraitBase):
+    pass
+
+
+class Trait(TraitBase):
     id: int
-    name: Union[str,None]
-    number = Column(Integer),
-    description: Union[str,None]
-    co_trait_name: Union[str,None]
-    variable_name: Union[str,None]
-    co_id: Union[str,None]
-    # variable_ontology_id: list[]  = []
-    variable_ontology = relationship("VariableOntology", back_populates="traits")
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
 
 
 class GenotypeBase(BaseModel):
-    __tablename__ = 'Genotype'
+    c_id: int
+    s_id: int
+    cross_name: str
+    history: str
+
+
+class GenotypeCreate(GenotypeBase):
+    pass
+
+
+class Genotype(GenotypeBase):
     id: int
-    c_id = Column(Integer)
-    s_id = Column(Integer)
-    cross_name: Union[str,None](600)
-    history: Union[str,None](600)
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 
 class LocationBase(BaseModel):
-    __tablename__ = 'Location'
-    id = Column(Integer, primary_key=True)
-    number = Column(Integer)
-    country: Union[str,None](600)
-    description: Union[str,None](600)
-    institute_name: Union[str,None](600)
-    cooperator: Union[str,None](600)
-    latitude: Union[str,None](10)
-    latitude_degrees = Column(Integer)
-    latitude_minutes = Column(Integer)
-    longitude: Union[str,None](10)
-    longitude_degrees = Column(Integer)
-    longitude_minutes = Column(Integer)
-    altitude = Column(Integer)
+    number: int
+    country: str
+    description: str
+    institute_name: str
+    cooperator: str
+    latitude: str
+    latitude_degrees: int
+    latitude_minutes: int
+    longitude: str
+    longitude_degrees: int
+    longitude_minutes: int
+    altitude: int
+
+
+class LocationCreate(LocationBase):
+    pass
+
+
+class Location(LocationBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 
 class CropOntologyBase(BaseModel):
-    __tablename__ = 'CropOntology'
-    id = Column(Integer, primary_key=True)
-    ontologyDbId: Union[str,None](50)
-    name: Union[str,None](200)
-    trait_ontologies = relationship("TraitOntology", back_populates="crop_ontology")
+    ontology_db_id: str
+    name: str
+
+
+class CropOntologyCreate(CropOntologyBase):
+    pass
+
+
+class CropOntology(CropOntologyBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 
 class TraitOntologyBase(BaseModel):
-    __tablename__ = 'TraitOntology'
-    id = Column(Integer, primary_key=True)
-    traitDbId: Union[str,None](50)
-    name: Union[str,None](200)
-    class_family: Union[str,None](200)
-    description: Union[str,None](1000)
-    crop_ontology_id = Column(Integer, ForeignKey("CropOntology.id"), nullable=False)
-    crop_ontology = relationship("CropOntology", back_populates="trait_ontologies")
-    variable_ontologies = relationship("VariableOntology", back_populates="trait_ontology")
+    trait_db_id: str
+    name: str
+    class_family: str
+    description: str
+
+
+class TraitOntologyCreate(TraitOntologyBase):
+    pass
+
+
+class TraitOntology(TraitOntologyBase):
+    id: int
+    crop_ontology_id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
 
 
 class MethodOntologyBase(BaseModel):
-    __tablename__ = 'MethodOntology'
-    id = Column(Integer, primary_key=True)
-    methodDbId: Union[str,None](50)
-    name = Column('', String(200))
-    class_family: Union[str,None](200)
-    description: Union[str,None](1000)
-    formula: Union[str,None](500)
-    variable_ontologies = relationship("VariableOntology", back_populates="method_ontology")
+    method_db_id: str
+    name: str
+    class_family: str
+    description: str
+    formula: str
+
+
+class MethodOntologyCreate(MethodOntologyBase):
+    pass
+
+
+class MethodOntology(MethodOntologyBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
 
 
 class ScaleOntologyBase(BaseModel):
-    __tablename__ = 'ScaleOntology'
-    id = Column(Integer, primary_key=True)
-    scaleDbId: Union[str,None](50)
-    name: Union[str,None](200)
-    dataType: Union[str,None](200)
-    validValues: Union[str,None](2000)
-    variable_ontologies = relationship("VariableOntology", back_populates="scale_ontology")
+    scale_db_id: str
+    name: str
+    dataType: str
+    validValues: str
 
+
+class ScaleOntologyCreate(ScaleOntologyBase):
+    pass
+
+
+class ScaleOntology(ScaleOntologyBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 class VariableOntologyBase(BaseModel):
-    __tablename__ = 'VariableOntology'
-    id = Column(Integer, primary_key=True)
-    trait_ontology_id = Column(Integer, ForeignKey("TraitOntology.id"), nullable=False),
-    trait_ontology = relationship("TraitOntology", back_populates="variable_ontologies")
-    traits = relationship("Trait", back_populates="variable_ontology")
-    method_ontology_id = Column(Integer, ForeignKey("MethodOntology.id"), nullable=False)
-    method_ontology = relationship("MethodOntology", back_populates="variable_ontologies")
-    scale_ontologies_id = Column(Integer, ForeignKey("ScaleOntology.id"), nullable=False)
-    scale_ontology = relationship("ScaleOntology", back_populates="variable_ontologies")
-    observation_Variable_db_id: Union[str,None](50)
-    name: Union[str,None](200)
-    synonyms: Union[str,None](500)
-    growth_stage: Union[str,None](500)
+    name: str
+    synonyms: str
+    growth_stage: str
+    observation_variable_db_id: str
+
+
+class VariableOntologyCreate(VariableOntologyBase):
+    pass
+
+
+class VariableOntology(VariableOntologyBase):
+    id: int
+    trait_ontology_id: int
+    trait_id: int
+    method_ontology_id: int
+    scale_ontology_id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
+
 
 
 class RawCollectionBase(BaseModel):
-    id = Column(Integer, primary_key=True)
-    trail_id = Column(Integer, ForeignKey("Trail.id"), nullable=False)
-    trait_id = Column(Integer, ForeignKey("Trait.id"), nullable=False)
-    genotype_id = Column(Integer, ForeignKey("Genotype.id"), nullable=False)
-    location_id = Column(Integer, ForeignKey("Location.id"), nullable=False)
-    occurrence = Column(Integer)
-    cycle: Union[str,None](4)
-    gen_number = Column(Integer)
-    repetition = Column(Integer)
-    sub_block = Column(Integer)
-    value_data: Union[str,None](100)
+    occurrence: int
+    cycle: str
+    gen_number:int
+    repetition: int
+    sub_block: int
+    value_data:str
 
+
+class RawCollectionCreate(RawCollectionBase):
+    pass
+
+
+class RawCollection(RawCollectionBase):
+    id: int
+    trail_id: int
+    trait_id: int
+    genotype_id: int
+    location_id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
