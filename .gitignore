@@ -15,10 +15,7 @@ log.txt
 Pipfile.lock
 env3.*
 env
-<<<<<<< HEAD
-=======
 .venv
->>>>>>> feature/merge-init
 docs_build
 site_build
 venv
@@ -33,6 +30,6 @@ archive.zip
 # macOS
 .DS_Store
 
-
+.trunk
 
 mysql_data

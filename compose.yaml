@@ -14,7 +14,7 @@ services:
       - data-python
     volumes:
       - ./database/mysql_data:/var/lib/mysql
-      - ./database/restore:/docker-entrypoint-initdb.d
+      # - ./database/restore:/docker-entrypoint-initdb.d
     ports:
       - "${DB_PORT}:3306"
   adminer:

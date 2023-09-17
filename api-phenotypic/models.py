@@ -1,13 +1,10 @@
 from peewee import (
     CharField,
-    FixedCharField,
+    TextField,
     ForeignKeyField,
     IntegerField,
     Model,
-    TextField,
 )
-
-# import peewee
 from database import db
 
 
@@ -33,10 +30,9 @@ class Unit(Model):
 
 
 class Trait(Model):
-    __tablename__ = "Trait"
     name = CharField(unique=True, index=True)
     number = CharField()
-    description = FixedCharField()
+    description = TextField()
     co_trait_name = CharField(index=True)
     variable_name = CharField()
     co_id = CharField()
@@ -48,14 +44,17 @@ class Trait(Model):
 class Genotype(Model):
     c_id = IntegerField()
     s_id = IntegerField()
-    cross_name = FixedCharField()
-    history = FixedCharField()
+    cross_name = CharField(index=True, unique=True)
+    history_name = TextField()
+
+    class Meta:
+        database = db
 
 
 class Location(Model):
     number = IntegerField()
     country = CharField()
-    description = FixedCharField()
+    description = TextField()
     institute_name = CharField()
     cooperator = CharField()
     latitude = CharField()
@@ -94,7 +93,7 @@ class MethodOntology(Model):
     name = CharField()
     class_family = CharField()
     description = TextField()
-    formula = FixedCharField()
+    formula = TextField()
 
     class Meta:
         database = db
@@ -112,8 +111,8 @@ class ScaleOntology(Model):
 
 class VariableOntology(Model):
     name = CharField()
-    synonyms = FixedCharField()
-    growth_stage = FixedCharField()
+    synonyms = TextField()
+    growth_stage = TextField()
     observation_variable_db_id = CharField()
     trait_ontology = ForeignKeyField(TraitOntology, backref="variable_ontologies")
     trait = ForeignKeyField(Trait, backref="variable_ontology")

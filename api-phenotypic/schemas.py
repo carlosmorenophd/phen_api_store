@@ -80,7 +80,7 @@ class GenotypeBase(BaseModel):
     c_id: int
     s_id: int
     cross_name: str
-    history: str
+    history_name: str
 
 
 class GenotypeCreate(GenotypeBase):
