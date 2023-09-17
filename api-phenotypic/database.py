@@ -1,5 +1,5 @@
 import os
-form peewee import _ConnectionState, MySQLDatabase
+from peewee import _ConnectionState, MySQLDatabase
 from dotenv import load_dotenv
 from contextvars import ContextVar
 
