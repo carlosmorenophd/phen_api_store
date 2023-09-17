@@ -1,8 +1,5 @@
-import time
 from typing import List
-
 from fastapi import Depends, FastAPI, HTTPException
-
 import crud
 import database
 import models
@@ -35,7 +32,20 @@ def get_db(db_state=Depends(reset_db_state)):
 
 @app.post("/web_files/", response_model=schemas.WebFile, dependencies=[Depends(get_db)])
 def create_web_file(web_file: schemas.WebFileCreate):
-    db_web_file = crud.get_user_by_name(name=web_file.name)
-    if db_web_file:
-        return db_web_file
-    return crud.create_web_file(webFile=web_file)
+    return crud.create_web_file(web_file=web_file)
+
+@app.post("/trail/", response_model=schemas.Trail, dependencies=[Depends(get_db)])
+def create_trail(trail: schemas.Trail):
+    return crud.create_trail(trail=trail)
+
+@app.post("/unit/", response_model=schemas.Unit, dependencies=[Depends(get_db)])
+def create_unit(unit: schemas.Unit):
+    return crud.create_unit(unit=unit)
+
+@app.post("/trait/", response_model=schemas.Trait, dependencies=[Depends(get_db)])
+def create_trait(trait: schemas.Trait):
+    return crud.create_trait(trait=trait)
+
+@app.post("/genotype/", response_model=schemas.Genotype, dependencies=[Depends(get_db)])
+def create_genotype(genotype: schemas.Genotype):
+    return crud.create_genotype(genotype=genotype)

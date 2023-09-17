@@ -1,4 +1,4 @@
-from typing import Any, List, Union
+from typing import Any
 from peewee import ModelSelect
 from pydantic import BaseModel
 from pydantic.utils import GetterDict
