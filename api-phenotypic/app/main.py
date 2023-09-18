@@ -1,5 +1,4 @@
 from os import getenv
-from typing import List
 
 import crud
 import models
