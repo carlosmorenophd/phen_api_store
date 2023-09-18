@@ -11,13 +11,7 @@ coverage.xml
 .netlify
 test.db
 log.txt
-Pipfile.lock
-env3.*
 .venv
-docs_build
-site_build
-docs.zip
-archive.zip
 
 # vim temporary files
 *~
