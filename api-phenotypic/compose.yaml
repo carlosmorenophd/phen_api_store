@@ -24,6 +24,13 @@ services:
       - 8080:8080
     networks:
       - data-python
+  api:
+    image:
+     
+    ports:
+      - 8000: 8000
+    networks:
+      - data-python
 
 networks:
   data-python:
