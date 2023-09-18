@@ -30,6 +30,4 @@ archive.zip
 # macOS
 .DS_Store
 
-.trunk
-
 mysql_data

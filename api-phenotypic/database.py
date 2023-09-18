@@ -24,9 +24,9 @@ class PeeweeConnectionState(_ConnectionState):
 db = MySQLDatabase(
     getenv("DB_SCHEMA"),
     host=getenv("DB_HOST"),
+    password=getenv("DB_PASS"),
     port=int(getenv("DB_PORT")),
     user=getenv("DB_USER"),
-    password=getenv("DB_PASS"),
 )
 
 db._state = PeeweeConnectionState()
