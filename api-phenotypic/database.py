@@ -1,10 +1,12 @@
-from os import getenv
-from peewee import _ConnectionState, MySQLDatabase
-from dotenv import load_dotenv
 from contextvars import ContextVar
+from os import getenv
+
+from dotenv import load_dotenv
+from peewee import MySQLDatabase, _ConnectionState
 
 load_dotenv()
-db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
+db_state_default = {
+    "closed": None, "conn": None, "ctx": None, "transactions": None}
 db_state = ContextVar("db_state", default=db_state_default.copy())
 
 
@@ -20,6 +22,12 @@ class PeeweeConnectionState(_ConnectionState):
         return self._state.get()[name]
 
 
-db = MySQLDatabase(getenv('DB_SCHEMA'), host=getenv("DB_HOST"), port=int(getenv('DB_PORT')), user=getenv('DB_USER'), password=getenv('DB_PASS'))
+db = MySQLDatabase(
+    getenv("DB_SCHEMA"),
+    host=getenv("DB_HOST"),
+    password=getenv("DB_PASS"),
+    port=int(getenv("DB_PORT")),
+    user=getenv("DB_USER"),
+)
 
 db._state = PeeweeConnectionState()

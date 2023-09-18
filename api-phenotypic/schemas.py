@@ -1,4 +1,5 @@
-from typing import Any, List, Union
+from typing import Any
+
 from peewee import ModelSelect
 from pydantic import BaseModel
 from pydantic.utils import GetterDict
@@ -15,8 +16,10 @@ class PeeweeGetterDict(GetterDict):
 class WebFileBase(BaseModel):
     name: str
 
+
 class WebFileCreate(WebFileBase):
     pass
+
 
 class WebFile(WebFileBase):
     id: int
@@ -29,8 +32,10 @@ class WebFile(WebFileBase):
 class TrailBase(BaseModel):
     name: str
 
+
 class TrailCreate(TrailBase):
     pass
+
 
 class Trail(TrailBase):
     id: int
@@ -43,8 +48,10 @@ class Trail(TrailBase):
 class UnitBase(BaseModel):
     name: str
 
+
 class UnitCreate(UnitBase):
     pass
+
 
 class Unit(UnitBase):
     id: int
@@ -73,7 +80,6 @@ class Trait(TraitBase):
     class Config:
         orm_mode = True
         getter_dict = PeeweeGetterDict
-
 
 
 class GenotypeBase(BaseModel):
@@ -147,17 +153,16 @@ class TraitOntologyBase(BaseModel):
 
 
 class TraitOntologyCreate(TraitOntologyBase):
-    pass
+    crop_ontology_id: int
 
 
 class TraitOntology(TraitOntologyBase):
     id: int
-    crop_ontology_id: int
+    crop_ontology: CropOntology
 
     class Config:
         orm_mode = True
         getter_dict = PeeweeGetterDict
-
 
 
 class MethodOntologyBase(BaseModel):
@@ -180,12 +185,11 @@ class MethodOntology(MethodOntologyBase):
         getter_dict = PeeweeGetterDict
 
 
-
 class ScaleOntologyBase(BaseModel):
     scale_db_id: str
     name: str
-    dataType: str
-    validValues: str
+    data_type: str
+    valid_values: str
 
 
 class ScaleOntologyCreate(ScaleOntologyBase):
@@ -199,50 +203,55 @@ class ScaleOntology(ScaleOntologyBase):
         orm_mode = True
         getter_dict = PeeweeGetterDict
 
+
 class VariableOntologyBase(BaseModel):
-    name: str
-    synonyms: str
     growth_stage: str
+    name: str
     observation_variable_db_id: str
+    synonyms: str
 
 
 class VariableOntologyCreate(VariableOntologyBase):
-    pass
+    method_ontology_id: int
+    scale_ontology_id: int
+    trait_id: int
+    trait_ontology_id: int
 
 
 class VariableOntology(VariableOntologyBase):
     id: int
-    trait_ontology_id: int
-    trait_id: int
-    method_ontology_id: int
-    scale_ontology_id: int
+    method_ontology: MethodOntology
+    scale_ontology: ScaleOntology
+    trait_ontology: TraitOntology
+    trait: Trait
 
     class Config:
         orm_mode = True
         getter_dict = PeeweeGetterDict
 
 
-
-
 class RawCollectionBase(BaseModel):
     occurrence: int
     cycle: str
-    gen_number:int
+    gen_number: int
     repetition: int
     sub_block: int
-    value_data:str
+    value_data: str
 
 
 class RawCollectionCreate(RawCollectionBase):
-    pass
-
-
-class RawCollection(RawCollectionBase):
-    id: int
     trail_id: int
     trait_id: int
     genotype_id: int
     location_id: int
+
+
+class RawCollection(RawCollectionBase):
+    id: int
+    trail: Trail
+    trait: Trait
+    genotype: Genotype
+    location: Location
 
     class Config:
         orm_mode = True
