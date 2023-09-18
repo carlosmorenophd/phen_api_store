@@ -153,12 +153,12 @@ class TraitOntologyBase(BaseModel):
 
 
 class TraitOntologyCreate(TraitOntologyBase):
-    pass
+    crop_ontology_id: int
 
 
 class TraitOntology(TraitOntologyBase):
     id: int
-    crop_ontology_id: int
+    crop_ontology: CropOntology
 
     class Config:
         orm_mode = True
@@ -188,8 +188,8 @@ class MethodOntology(MethodOntologyBase):
 class ScaleOntologyBase(BaseModel):
     scale_db_id: str
     name: str
-    dataType: str
-    validValues: str
+    data_type: str
+    valid_values: str
 
 
 class ScaleOntologyCreate(ScaleOntologyBase):
@@ -205,22 +205,25 @@ class ScaleOntology(ScaleOntologyBase):
 
 
 class VariableOntologyBase(BaseModel):
-    name: str
-    synonyms: str
     growth_stage: str
+    name: str
     observation_variable_db_id: str
+    synonyms: str
 
 
 class VariableOntologyCreate(VariableOntologyBase):
-    pass
+    method_ontology_id: int
+    scale_ontology_id: int
+    trait_id: int
+    trait_ontology_id: int
 
 
 class VariableOntology(VariableOntologyBase):
     id: int
-    trait_ontology_id: int
-    trait_id: int
-    method_ontology_id: int
-    scale_ontology_id: int
+    method_ontology: MethodOntology
+    scale_ontology: ScaleOntology
+    trait_ontology: TraitOntology
+    trait: Trait
 
     class Config:
         orm_mode = True
@@ -237,15 +240,18 @@ class RawCollectionBase(BaseModel):
 
 
 class RawCollectionCreate(RawCollectionBase):
-    pass
-
-
-class RawCollection(RawCollectionBase):
-    id: int
     trail_id: int
     trait_id: int
     genotype_id: int
     location_id: int
+
+
+class RawCollection(RawCollectionBase):
+    id: int
+    trail: Trail
+    trait: Trait
+    genotype: Genotype
+    location: Location
 
     class Config:
         orm_mode = True

@@ -102,8 +102,8 @@ class MethodOntology(Model):
 class ScaleOntology(Model):
     scale_db_id = CharField(unique=True, index=True)
     name = CharField()
-    dataType = CharField()
-    validValues = TextField()
+    data_type = CharField()
+    valid_values = TextField()
 
     class Meta:
         database = db

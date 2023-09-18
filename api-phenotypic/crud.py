@@ -106,7 +106,11 @@ def create_trait_ontology(trait_ontology: schemas.TraitOntology):
     ).first()
     if db_entity:
         return db_entity
-    crop_ontology = models.CropOntology.filter(id == trait_ontology.crop_ontology_id)
+    crop_ontology = models.CropOntology.filter(
+        models.CropOntology.id == trait_ontology.crop_ontology_id
+    ).first()
+    if not crop_ontology:
+        raise ValueError("The crop ontology is not valid")
     db_entity = models.TraitOntology(
         trait_db_id=trait_ontology.trait_db_id,
         name=trait_ontology.name,
@@ -118,62 +122,116 @@ def create_trait_ontology(trait_ontology: schemas.TraitOntology):
     return db_entity
 
 
-def create_method_ontology(entity: schemas.MethodOntology):
+def create_method_ontology(method_ontology: schemas.MethodOntology):
     db_entity = models.MethodOntology.filter(
-        models.MethodOntology.method_db_id == entity.method_db_id
+        models.MethodOntology.method_db_id == method_ontology.method_db_id
     ).first()
     if db_entity:
         return db_entity
     db_entity = models.MethodOntology(
-        method_db_id=entity.method_db_id,
-        name=entity.name,
-        class_family=entity.class_family,
-        description=entity.description,
-        formula=entity.formula,
+        method_db_id=method_ontology.method_db_id,
+        name=method_ontology.name,
+        class_family=method_ontology.class_family,
+        description=method_ontology.description,
+        formula=method_ontology.formula,
     )
     db_entity.save()
     return db_entity
 
 
-# class MethodOntology(Model):
+def create_scale_ontology(scale_ontology: schemas.ScaleOntology):
+    db_entity = models.ScaleOntology.filter(
+        models.ScaleOntology.scale_db_id == scale_ontology.scale_db_id
+    ).first()
+    if db_entity:
+        return db_entity
+    db_entity = models.ScaleOntology(
+        scale_db_id=scale_ontology.scale_db_id,
+        name=scale_ontology.name,
+        dataType=scale_ontology.dataType,
+        validValues=scale_ontology.validValues,
+    )
+    db_entity.save()
+    return db_entity
 
 
-#     class Meta:
-#         database = db
+def create_variable_ontology(variable_ontology: schemas.VariableOntology):
+    db_entity = models.VariableOntology.filter(
+        models.ScaleOntology.observation_variable_db_id
+        == variable_ontology.observation_variable_db_id
+    ).first()
+    if db_entity:
+        return db_entity
+    trait_ontology = models.TraitOntology.filter(
+        models.TraitOntology.id == variable_ontology.trait_ontology_id
+    ).first()
+    if not trait_ontology:
+        raise ValueError("The Crop Ontology is not valid")
+    trait = models.Trait.filter(models.Trait.id == variable_ontology.trait_id).first()
+    if not trait:
+        raise ValueError("The Trait is not valid")
+    method_ontology = models.MethodOntology.filter(
+        models.MethodOntology.id == variable_ontology.method_ontology_id
+    ).first()
+    if not method_ontology:
+        raise ValueError("The Method Ontology is not valid")
+    scale_ontology = models.ScaleOntology.filter(
+        models.ScaleOntology.id == variable_ontology.scale_ontology_id
+    ).first()
+    if not scale_ontology:
+        raise ValueError("The Scale Ontology is not valid")
+    db_entity = models.ScaleOntology(
+        name=variable_ontology.name,
+        synonyms=variable_ontology.synonyms,
+        growth_stage=variable_ontology.growth_stage,
+        observation_variable_db_id=variable_ontology.observation_variable_db_id,
+        trait_ontology=trait_ontology,
+        trait=trait,
+        method_ontology=method_ontology,
+        scale_ontology=scale_ontology,
+    )
+    db_entity.save()
+    return db_entity
 
 
-# class ScaleOntology(Model):
-#     scale_db_id = CharField(unique=True, index=True)
-#     name = CharField()
-#     dataType = CharField()
-#     validValues = TextField()
-
-#     class Meta:
-#         database = db
-
-
-# class VariableOntology(Model):
-#     name = CharField()
-#     synonyms = TextField()
-#     growth_stage = TextField()
-#     observation_variable_db_id = CharField()
-#     trait_ontology = ForeignKeyField(TraitOntology, backref="variable_ontologies")
-#     trait = ForeignKeyField(Trait, backref="variable_ontology")
-#     method_ontology = ForeignKeyField(MethodOntology, backref="variable_ontologies")
-#     scale_ontology = ForeignKeyField(ScaleOntology, backref="variable_ontologies")
-
-#     class Meta:
-#         database = db
-
-
-# class RawCollection(Model):
-#     occurrence = IntegerField()
-#     cycle = CharField()
-#     gen_number = IntegerField()
-#     repetition = IntegerField()
-#     sub_block = IntegerField()
-#     value_data = CharField()
-#     trail = ForeignKeyField(Trail, backref="raw_collections")
-#     trait = ForeignKeyField(Trait, backref="raw_collections")
-#     genotype = ForeignKeyField(Genotype, backref="raw_collections")
-#     location = ForeignKeyField(Location, backref="raw_collections")
+def create_raw_collection(raw_collection: schemas.RawCollection):
+    db_entity = models.RawCollection.filter(
+        models.RawCollection.occurrence == raw_collection.occurrence
+        and models.RawCollection.cycle == raw_collection.cycle
+        and models.RawCollection.gen_number == raw_collection.gen_number
+        and models.RawCollection.repetition == raw_collection.repetition
+        and models.RawCollection.sub_block == raw_collection.sub_block
+        and models.RawCollection.value_data == raw_collection.value_data
+    ).first()
+    if db_entity:
+        return db_entity
+    trail = models.Trail.filter(models.Trail.id == raw_collection.trait_id).first()
+    if not trail:
+        raise ValueError("The Trail is not valid")
+    trait = models.Trait.filter(models.Trait.id == raw_collection.trait_id).first()
+    if not trait:
+        raise ValueError("The Trait is not valid")
+    genotype = models.Genotype.filter(
+        models.Genotype.id == raw_collection.genotype_id
+    ).first()
+    if not genotype:
+        raise ValueError("The Genotype is not valid")
+    location = models.Location.filter(
+        models.Location.id == raw_collection.location_id
+    ).first()
+    if not location:
+        raise ValueError("The Scale Ontology is not valid")
+    db_entity = models.ScaleOntology(
+        occurrence=raw_collection.occurrence,
+        cycle=raw_collection.cycle,
+        gen_number=raw_collection.gen_number,
+        repetition=raw_collection.repetition,
+        sub_block=raw_collection.sub_block,
+        value_data=raw_collection.value_data,
+        trail=trail,
+        trait=trait,
+        genotype=genotype,
+        location=location,
+    )
+    db_entity.save()
+    return db_entity

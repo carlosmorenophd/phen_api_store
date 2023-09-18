@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 from peewee import MySQLDatabase, _ConnectionState
 
 load_dotenv()
-db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
+db_state_default = {
+    "closed": None, "conn": None, "ctx": None, "transactions": None}
 db_state = ContextVar("db_state", default=db_state_default.copy())
 
 
