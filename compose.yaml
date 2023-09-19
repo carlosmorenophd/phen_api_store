@@ -1,36 +1,37 @@
-version: '3.1'
+version: "3.1"
 
 services:
   database:
-    image: mysql:8.0.34-debian
-    command: --default-authentication-plugin=mysql_native_password
+    container_name: database
+    platform: linux/x86_64
+    build: ./database
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: $DB_ROOT
-      MYSQL_USER: $DB_USER
-      MYSQL_PASSWORD: $DB_PASS
-      MYSQL_DATABASE: $DB_SCHEMA
     networks:
       - data-python
     volumes:
       - ./database/mysql_data:/var/lib/mysql
       # - ./database/restore:/docker-entrypoint-initdb.d
     ports:
-      - "${DB_PORT}:3306"
-  adminer:
-    image: adminer
-    restart: always
+      - "3306:3306"
+    env_file:
+      - ./database/local.env
+    tty: true
+  api-phenotypic:
+    depends_on:
+      - database
+    build: ./api-phenotypic
+    container_name: api-phenotypic
+    platform: linux/x86_64
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./api-phenotypic/app:/app
     ports:
-      - 8080:8080
+      - 80:8000
     networks:
       - data-python
-  api:
-    image:
-     
-    ports:
-      - 8000: 8000
-    networks:
-      - data-python
+    env_file:
+      - ./api-phenotypic/local.env
 
 networks:
   data-python:
