@@ -13,8 +13,8 @@ services:
       # - ./database/restore:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
-    # healthcheck:
-      # test: ["CMD", "--su-mysql", "--connect", "--innodb_initialized"]
+    healthcheck:
+      test: ["CMD", "--su-mysql", "--connect", "--innodb_initialized"]
     env_file:
       - ./database/local.env
     tty: true
