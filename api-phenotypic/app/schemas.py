@@ -236,6 +236,7 @@ class RawCollectionBase(BaseModel):
     gen_number: int
     repetition: int
     sub_block: int
+    plot: int
     value_data: str
 
 

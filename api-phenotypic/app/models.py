@@ -129,6 +129,7 @@ class RawCollection(Model):
     gen_number = IntegerField()
     repetition = IntegerField()
     sub_block = IntegerField()
+    plot = IntegerField()
     value_data = CharField()
     trail = ForeignKeyField(Trail, backref="raw_collections")
     trait = ForeignKeyField(Trait, backref="raw_collections")
