@@ -202,6 +202,7 @@ def create_raw_collection(raw_collection: schemas.RawCollection):
         and models.RawCollection.repetition == raw_collection.repetition
         and models.RawCollection.sub_block == raw_collection.sub_block
         and models.RawCollection.value_data == raw_collection.value_data
+        and models.RawCollection.plot == raw_collection.plot
     ).first()
     if db_entity:
         return db_entity
@@ -227,6 +228,7 @@ def create_raw_collection(raw_collection: schemas.RawCollection):
         gen_number=raw_collection.gen_number,
         repetition=raw_collection.repetition,
         sub_block=raw_collection.sub_block,
+        plot=raw_collection.plot,
         value_data=raw_collection.value_data,
         trail=trail,
         trait=trait,
