@@ -1,12 +1,7 @@
-from os import getenv
-from typing import List
-
 import crud
 import models
 import schemas
-from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
-from uvicorn import run
 
 import database
 from database import db_state_default
@@ -101,7 +96,8 @@ def create_trait_ontology(trait_ontology: schemas.TraitOntologyCreate):
     try:
         return crud.create_trait_ontology(trait_ontology=trait_ontology)
     except ValueError as err:
-        raise HTTPException(status_code=404, detail="Crop trait not found") from err
+        raise HTTPException(
+            status_code=404, detail="Crop trait not found") from err
 
 
 @app.post(
@@ -138,8 +134,3 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntologyCreate):
 )
 def create_raw_collection(raw_collection: schemas.RawCollectionCreate):
     return crud.create_variable_ontology(raw_collection=raw_collection)
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    run(app, host="127.0.0.1", port=int(getenv("API_PORT")))
