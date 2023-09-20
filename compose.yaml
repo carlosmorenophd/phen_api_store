@@ -6,43 +6,22 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root##MysqlP123456
+      MYSQL_ROOT_PASSWORD: $DB_ROOT
       MYSQL_USER: $DB_USER
       MYSQL_PASSWORD: $DB_PASS
       MYSQL_DATABASE: $DB_SCHEMA
     networks:
       - data-python
-    ports:
-      - "3306:3306"
     volumes:
-      - ./mysql:/var/lib/mysql
-#  fastapi:
-#    build: ./src/backend
-#    networks:
-#      - data-python
-#    volumes:
-#      - ./files:/home/user/files
-#      - ./src:/home/user/src
-#    depends_on:
-#      - database
-#    ports:
-#      - "8080:80"
-#    stdin_open: true
-#    tty: true
-  adminer:
-    image: adminer:4.8.1
-    restart: always
-    depends_on:
-      - database
+      - ./database/mysql_data:/var/lib/mysql
+      - ./database/restore:/docker-entrypoint-initdb.d
     ports:
-      - "8081:8080"
-    environment:
-      ADMINER_DEFAULT_SERVER: database
-      ADMINER_DEFAULT_USER: $DB_USER
-      ADMINER_DEFAULT_PASSWORD: $DB_PASS
-      ADMINER_DEFAULT_DB: $DB_SCHEMA
-      ADMINER_DEFAULT_TYPE: mysql
-      ADMINER_DEFAULT_PORT: 3306
+      - "${DB_PORT}:3306"
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
     networks:
       - data-python
 
