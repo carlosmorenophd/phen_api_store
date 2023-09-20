@@ -1,0 +1,8 @@
+{
+    "cSpell.ignoreWords": [
+        "dotenv",
+        "fastapi",
+        "phenotipyc",
+        "uvicorn"
+    ]
+}
