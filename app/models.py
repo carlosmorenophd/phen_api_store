@@ -1,6 +1,6 @@
 from peewee import CharField, ForeignKeyField, IntegerField, Model, TextField
 
-from database import db
+from app.database import db
 
 
 class WebFile(Model):
@@ -119,6 +119,7 @@ class VariableOntology(Model):
 
 
 class RawCollection(Model):
+    hash_raw = CharField(max_length=500)
     occurrence = IntegerField()
     cycle = CharField()
     gen_number = IntegerField()

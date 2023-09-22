@@ -1,12 +1,12 @@
 from typing import List
 
-import crud
-import models
-import schemas
+from app import crud
+from app import models
+from app import schemas
 from fastapi import Depends, FastAPI, HTTPException
 
-import database
-from database import db_state_default
+from app import database
+from app.database import db_state_default
 
 database.db.connect()
 database.db.create_tables(

@@ -1,5 +1,5 @@
-import models
-import schemas
+from app import models
+from app import schemas
 
 
 def create_web_file(web_file: schemas.WebFile):
