@@ -3,7 +3,8 @@ from app import schemas
 
 
 def create_web_file(web_file: schemas.WebFile):
-    db_find = models.WebFile.filter(models.WebFile.name == web_file.name).first()
+    db_find = models.WebFile.filter(
+        models.WebFile.name == web_file.name).first()
     if db_find:
         return db_find
     db_entity = models.WebFile(name=web_file.name)
@@ -167,7 +168,8 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
     ).first()
     if not trait_ontology:
         raise ValueError("The Crop Ontology is not valid")
-    trait = models.Trait.filter(models.Trait.id == variable_ontology.trait_id).first()
+    trait = models.Trait.filter(
+        models.Trait.id == variable_ontology.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     method_ontology = models.MethodOntology.filter(
@@ -195,10 +197,12 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
 
 
 def create_raw_collection(raw_collection: schemas.RawCollection):
-    trail = models.Trail.filter(models.Trail.id == raw_collection.trail_id).first()
+    trail = models.Trail.filter(
+        models.Trail.id == raw_collection.trail_id).first()
     if not trail:
         raise ValueError("The Trail is not valid")
-    trait = models.Trait.filter(models.Trait.id == raw_collection.trait_id).first()
+    trait = models.Trait.filter(
+        models.Trait.id == raw_collection.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     genotype = models.Genotype.filter(
@@ -215,22 +219,11 @@ def create_raw_collection(raw_collection: schemas.RawCollection):
     if not unit:
         raise ValueError("The Unit is not valid")
 
-    # db_entity = models.RawCollection.filter(
-    #     models.RawCollection.occurrence == raw_collection.occurrence
-    #     and models.RawCollection.cycle == raw_collection.cycle
-    #     and models.RawCollection.gen_number == raw_collection.gen_number
-    #     and models.RawCollection.repetition == raw_collection.repetition
-    #     and models.RawCollection.sub_block == raw_collection.sub_block
-    #     and models.RawCollection.value_data == raw_collection.value_data
-    #     and models.RawCollection.plot == raw_collection.plot
-    #     and models.RawCollection.trail == trail
-    #     and models.RawCollection.trait == trait
-    #     and models.RawCollection.unit == unit
-    #     and models.RawCollection.location == location
-    #     and models.RawCollection.genotype == genotype
-    # ).first()
-    # if db_entity:
-    #     return db_entity
+    db_entity = models.RawCollection.filter(
+        models.RawCollection.hash_raw == raw_collection.hash_raw
+    ).first()
+    if db_entity:
+        return db_entity
     db_entity = models.RawCollection(
         occurrence=raw_collection.occurrence,
         cycle=raw_collection.cycle,
@@ -244,6 +237,7 @@ def create_raw_collection(raw_collection: schemas.RawCollection):
         genotype=genotype,
         location=location,
         unit=unit,
+        hash_raw=raw_collection.hash_raw
     )
     db_entity.save()
     return db_entity
