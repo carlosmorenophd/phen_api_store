@@ -1,8 +1,14 @@
 {
     "cSpell.ignoreWords": [
+        "backref",
         "dotenv",
         "fastapi",
-        "phenotipyc",
+        "pydantic"
+    ],
+    "cSpell.words": [
         "uvicorn"
-    ]
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#a6c4bc"
+    }
 }
