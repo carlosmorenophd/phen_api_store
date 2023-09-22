@@ -119,6 +119,7 @@ class VariableOntology(Model):
 
 
 class RawCollection(Model):
+    hash_raw = CharField(max_length=500)
     occurrence = IntegerField()
     cycle = CharField()
     gen_number = IntegerField()

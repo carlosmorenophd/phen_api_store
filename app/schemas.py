@@ -231,6 +231,7 @@ class VariableOntology(VariableOntologyBase):
 
 
 class RawCollectionBase(BaseModel):
+    hash_raw: str
     occurrence: int
     cycle: str
     gen_number: int
