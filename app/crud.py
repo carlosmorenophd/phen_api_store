@@ -1,10 +1,8 @@
-from app import models
-from app import schemas
+from app import models, schemas
 
 
 def create_web_file(web_file: schemas.WebFile):
-    db_find = models.WebFile.filter(
-        models.WebFile.name == web_file.name).first()
+    db_find = models.WebFile.filter(models.WebFile.name == web_file.name).first()
     if db_find:
         return db_find
     db_entity = models.WebFile(name=web_file.name)
@@ -149,8 +147,8 @@ def create_scale_ontology(scale_ontology: schemas.ScaleOntology):
     db_entity = models.ScaleOntology(
         scale_db_id=scale_ontology.scale_db_id,
         name=scale_ontology.name,
-        dataType=scale_ontology.dataType,
-        validValues=scale_ontology.validValues,
+        data_type=scale_ontology.data_type,
+        valid_values=scale_ontology.valid_values,
     )
     db_entity.save()
     return db_entity
@@ -158,7 +156,7 @@ def create_scale_ontology(scale_ontology: schemas.ScaleOntology):
 
 def create_variable_ontology(variable_ontology: schemas.VariableOntology):
     db_entity = models.VariableOntology.filter(
-        models.ScaleOntology.observation_variable_db_id
+        models.VariableOntology.observation_variable_db_id
         == variable_ontology.observation_variable_db_id
     ).first()
     if db_entity:
@@ -168,8 +166,7 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
     ).first()
     if not trait_ontology:
         raise ValueError("The Crop Ontology is not valid")
-    trait = models.Trait.filter(
-        models.Trait.id == variable_ontology.trait_id).first()
+    trait = models.Trait.filter(models.Trait.id == variable_ontology.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     method_ontology = models.MethodOntology.filter(
@@ -182,7 +179,7 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
     ).first()
     if not scale_ontology:
         raise ValueError("The Scale Ontology is not valid")
-    db_entity = models.ScaleOntology(
+    db_entity = models.VariableOntology(
         name=variable_ontology.name,
         synonyms=variable_ontology.synonyms,
         growth_stage=variable_ontology.growth_stage,
@@ -197,12 +194,10 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
 
 
 def create_raw_collection(raw_collection: schemas.RawCollection):
-    trail = models.Trail.filter(
-        models.Trail.id == raw_collection.trail_id).first()
+    trail = models.Trail.filter(models.Trail.id == raw_collection.trail_id).first()
     if not trail:
         raise ValueError("The Trail is not valid")
-    trait = models.Trait.filter(
-        models.Trait.id == raw_collection.trait_id).first()
+    trait = models.Trait.filter(models.Trait.id == raw_collection.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     genotype = models.Genotype.filter(
@@ -237,7 +232,7 @@ def create_raw_collection(raw_collection: schemas.RawCollection):
         genotype=genotype,
         location=location,
         unit=unit,
-        hash_raw=raw_collection.hash_raw
+        hash_raw=raw_collection.hash_raw,
     )
     db_entity.save()
     return db_entity
@@ -265,3 +260,21 @@ def find_trait_by_number(number: int):
     if not trait:
         raise ValueError("The trait does not exist")
     return trait
+
+
+def find_trait_by_name(name: str):
+    trait = models.Trait.filter(models.Trait.name == name).first()
+    if not trait:
+        raise ValueError("The trait does not exist")
+    return trait
+
+
+def update_trait(id: int, trait: schemas.Trait):
+    db_entity = models.Trait.filter(models.Trait.id == id).first()
+    if not db_entity:
+        raise ValueError("The trait does not exist")
+    db_entity.co_trait_name = trait.co_trait_name
+    db_entity.variable_name = trait.variable_name
+    db_entity.co_id = trait.co_id
+    db_entity.save()
+    return db_entity

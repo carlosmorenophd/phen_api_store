@@ -1,11 +1,8 @@
 from typing import List
 
-from app import crud
-from app import models
-from app import schemas
 from fastapi import Depends, FastAPI, HTTPException
 
-from app import database
+from app import crud, database, models, schemas
 from app.database import db_state_default
 
 database.db.connect()
@@ -123,6 +120,7 @@ def create_scale_ontology(scale_ontology: schemas.ScaleOntologyCreate):
     "/variable_ontologies/",
     response_model=schemas.VariableOntology,
     dependencies=[Depends(get_db)],
+    tags=["Variable Ontologies"]
 )
 def create_variable_ontology(variable_ontology: schemas.VariableOntologyCreate):
     return crud.create_variable_ontology(variable_ontology=variable_ontology)
@@ -135,6 +133,7 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntologyCreate):
 )
 def create_raw_collection(raw_collection: schemas.RawCollectionCreate):
     return crud.create_raw_collection(raw_collection=raw_collection)
+
 
 # Fix to find and adding try
 @app.get(
@@ -172,9 +171,23 @@ def find_genotype_by_ids(c_id: int, s_id: int):
     "/traits/",
     response_model=schemas.Trait,
     dependencies=[Depends(get_db)],
+    tags=["trait"],
 )
-def find_trait_by_number(number: int):
+def find_trait_by_name(name: str):
     try:
-        return crud.find_trait_by_number(number=number)
+        return crud.find_trait_by_name(name=name)
+    except ValueError as err:
+        raise HTTPException(status_code=404, detail="Trait not found") from err
+
+
+@app.put(
+    "/traits/{id}",
+    response_model=schemas.Trait,
+    dependencies=[Depends(get_db)],
+    tags=["trait"],
+)
+def update_trait(id: int, trait: schemas.TraitCreate):
+    try:
+        return crud.update_trait(id=id, trait=trait)
     except ValueError as err:
         raise HTTPException(status_code=404, detail="Trait not found") from err
