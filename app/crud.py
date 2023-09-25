@@ -2,7 +2,8 @@ from app import models, schemas
 
 
 def create_web_file(web_file: schemas.WebFile):
-    db_find = models.WebFile.filter(models.WebFile.name == web_file.name).first()
+    db_find = models.WebFile.filter(
+        models.WebFile.name == web_file.name).first()
     if db_find:
         return db_find
     db_entity = models.WebFile(name=web_file.name)
@@ -30,8 +31,7 @@ def create_unit(unit: schemas.Unit):
 
 def create_trait(trait: schemas.Trait):
     db_entity = models.Trait.filter(
-        models.Trait.name == trait.name and models.Trait.number == trait.number
-    ).first()
+        models.Trait.name == trait.name).filter(models.Trait.number == trait.number).first()
     if db_entity:
         return db_entity
     db_entity = models.Trait(
@@ -48,10 +48,10 @@ def create_trait(trait: schemas.Trait):
 
 def create_genotype(genotype: schemas.Genotype):
     db_entity = models.Genotype.filter(
-        models.Genotype.c_id == genotype.c_id and models.Genotype.s_id == genotype.s_id
-    ).first()
+        models.Genotype.c_id == genotype.c_id).filter(models.Genotype.s_id == genotype.s_id)
+    print(db_entity)
     if db_entity:
-        return db_entity
+        return db_entity.first()
     db_entity = models.Genotype(
         c_id=genotype.c_id,
         s_id=genotype.s_id,
@@ -166,7 +166,8 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
     ).first()
     if not trait_ontology:
         raise ValueError("The Crop Ontology is not valid")
-    trait = models.Trait.filter(models.Trait.id == variable_ontology.trait_id).first()
+    trait = models.Trait.filter(
+        models.Trait.id == variable_ontology.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     method_ontology = models.MethodOntology.filter(
@@ -194,10 +195,12 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
 
 
 def create_raw_collection(raw_collection: schemas.RawCollection):
-    trail = models.Trail.filter(models.Trail.id == raw_collection.trail_id).first()
+    trail = models.Trail.filter(
+        models.Trail.id == raw_collection.trail_id).first()
     if not trail:
         raise ValueError("The Trail is not valid")
-    trait = models.Trait.filter(models.Trait.id == raw_collection.trait_id).first()
+    trait = models.Trait.filter(
+        models.Trait.id == raw_collection.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     genotype = models.Genotype.filter(
@@ -248,11 +251,12 @@ def search_location_by_number(number: int):
 
 def find_genotype_by_ids(c_id: int, s_id: int):
     genotype = models.Genotype.filter(
-        models.Genotype.s_id == s_id and models.Genotype.c_id == c_id
-    ).first()
+        models.Genotype.s_id == s_id
+    ).filter(models.Genotype.c_id == c_id)
+    print(genotype)
     if not genotype:
         raise ValueError("The genotype does not exist")
-    return genotype
+    return genotype.first()
 
 
 def find_trait_by_number(number: int):
