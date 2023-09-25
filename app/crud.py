@@ -2,7 +2,8 @@ from app import models, schemas
 
 
 def create_web_file(web_file: schemas.WebFile):
-    db_find = models.WebFile.filter(models.WebFile.name == web_file.name).first()
+    db_find = models.WebFile.filter(
+        models.WebFile.name == web_file.name).first()
     if db_find:
         return db_find
     db_entity = models.WebFile(name=web_file.name)
@@ -166,7 +167,8 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
     ).first()
     if not trait_ontology:
         raise ValueError("The Crop Ontology is not valid")
-    trait = models.Trait.filter(models.Trait.id == variable_ontology.trait_id).first()
+    trait = models.Trait.filter(
+        models.Trait.id == variable_ontology.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     method_ontology = models.MethodOntology.filter(
@@ -194,10 +196,12 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
 
 
 def create_raw_collection(raw_collection: schemas.RawCollection):
-    trail = models.Trail.filter(models.Trail.id == raw_collection.trail_id).first()
+    trail = models.Trail.filter(
+        models.Trail.id == raw_collection.trail_id).first()
     if not trail:
         raise ValueError("The Trail is not valid")
-    trait = models.Trait.filter(models.Trait.id == raw_collection.trait_id).first()
+    trait = models.Trait.filter(
+        models.Trait.id == raw_collection.trait_id).first()
     if not trait:
         raise ValueError("The Trait is not valid")
     genotype = models.Genotype.filter(
