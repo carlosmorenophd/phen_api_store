@@ -95,7 +95,8 @@ def create_trait_ontology(trait_ontology: schemas.TraitOntologyCreate):
     try:
         return crud.create_trait_ontology(trait_ontology=trait_ontology)
     except ValueError as err:
-        raise HTTPException(status_code=404, detail="Crop trait not found") from err
+        raise HTTPException(
+            status_code=404, detail="Crop trait not found") from err
 
 
 @app.post(
@@ -164,7 +165,8 @@ def find_genotype_by_ids(c_id: int, s_id: int):
     try:
         return crud.find_genotype_by_ids(c_id=c_id, s_id=s_id)
     except ValueError as err:
-        raise HTTPException(status_code=404, detail="Genotype not found") from err
+        raise HTTPException(
+            status_code=404, detail="Genotype not found") from err
 
 
 @app.get(
