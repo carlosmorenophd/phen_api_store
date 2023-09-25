@@ -4,6 +4,7 @@ from fastapi import Depends, FastAPI, HTTPException
 
 from app import crud, database, models, schemas
 from app.database import db_state_default
+from fastapi_pagination import Page, add_pagination, paginate
 
 database.db.connect()
 database.db.create_tables(
@@ -64,7 +65,9 @@ def create_trait(trait: schemas.TraitCreate):
 
 
 @app.post(
-    "/genotypes/", response_model=schemas.Genotype, dependencies=[Depends(get_db)]
+    "/genotypes/", response_model=schemas.Genotype,
+    dependencies=[Depends(get_db)],
+    tags=["genotype"],
 )
 def create_genotype(genotype: schemas.GenotypeCreate):
     return crud.create_genotype(genotype=genotype)
@@ -131,6 +134,7 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntologyCreate):
     "/raw_collections/",
     response_model=schemas.RawCollection,
     dependencies=[Depends(get_db)],
+    tags=["raw_collection"],
 )
 def create_raw_collection(raw_collection: schemas.RawCollectionCreate):
     return crud.create_raw_collection(raw_collection=raw_collection)
@@ -160,6 +164,7 @@ def search_location_by_number(number: int):
     "/genotypes/",
     response_model=schemas.Genotype,
     dependencies=[Depends(get_db)],
+    tags=["genotype"],
 )
 def find_genotype_by_ids(c_id: int, s_id: int):
     try:
@@ -193,3 +198,15 @@ def update_trait(id: int, trait: schemas.TraitCreate):
         return crud.update_trait(id=id, trait=trait)
     except ValueError as err:
         raise HTTPException(status_code=404, detail="Trait not found") from err
+
+
+@app.post(
+    "/raw_collections/trait/{id}",
+    response_model=Page[schemas.RawCollection],
+    dependencies=[Depends(get_db)],
+    tags=["raw_collection"],
+)
+def search_raw_collections(id: int, raw_collection: schemas.RawCollectionFilter):
+    return paginate(crud.search_raw_collection(id=id, raw_collection=raw_collection))
+
+add_pagination(app)

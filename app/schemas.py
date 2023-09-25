@@ -241,6 +241,13 @@ class RawCollectionBase(BaseModel):
     value_data: str
 
 
+class RawCollectionFilter(RawCollectionBase):
+    trail_ids: list[int]
+    trait_ids: list[int]
+    genotype_ids: list[int]
+    location_ids: list[int]
+    unit_ids: list[int]
+
 class RawCollectionCreate(RawCollectionBase):
     trail_id: int
     trait_id: int

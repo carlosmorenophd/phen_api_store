@@ -282,3 +282,19 @@ def update_trait(id: int, trait: schemas.Trait):
     db_entity.co_id = trait.co_id
     db_entity.save()
     return db_entity
+
+
+def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
+    db_trait = models.Trait.filter(models.Trait.id == id).first()
+    if not db_trait:
+        raise ValueError("The trait does not exist")
+    query = models.RawCollection.select()
+    query = query.where(models.RawCollection.trait == db_trait)
+    if raw_collection.cycle != "":
+        print("Start to new filter cycle ->{}".format(raw_collection.cycle))
+        query = query.where(models.RawCollection.cycle == raw_collection.cycle)
+    if raw_collection.occurrence != 0:
+        print("Start to new filter occurrence ->{}".format(raw_collection.occurrence))
+        query = query.where(
+            models.RawCollection.occurrence == raw_collection.occurrence)
+    return query.execute()
