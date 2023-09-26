@@ -210,4 +210,15 @@ def update_trait(id: int, trait: schemas.TraitCreate):
 def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
     return paginate(crud.search_raw_collection(id=id, raw_collection=raw_collection))
 
+
+@app.get(
+    "/special_query/ids/{target}",
+    response_model=list[int],
+    dependencies=[Depends(get_db)],
+    tags=["special_query"],
+    description="Get all id on database",
+)
+def search_raw_collections(target: schemas.EntityTarget):
+    return crud.special_query_ids(target=target)
+
 add_pagination(app)

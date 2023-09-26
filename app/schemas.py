@@ -1,4 +1,5 @@
 from typing import Any
+from enum import Enum
 
 from peewee import ModelSelect
 from pydantic import BaseModel, Field
@@ -275,3 +276,10 @@ class RawCollectionFilter(BaseModel):
     genotype_id: int = Field(default=0)
     location_id: int = Field(default=0)
     unit_id: int = Field(default=0)
+
+
+class EntityTarget(str, Enum):
+    genotype = "genotype"
+    trait = "trait"
+    repetition = "repetition"
+    location = "location"

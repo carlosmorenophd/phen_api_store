@@ -327,3 +327,15 @@ def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
     #     query = query.where(
     #         models.RawCollection.occurrence << list_location)
     return query.execute()
+
+
+def special_query_ids(target: schemas.EntityTarget):
+    if target == schemas.EntityTarget.genotype:
+        return list(map(lambda id: id.id, models.Genotype.select(models.Genotype.id).order_by(models.Genotype.id).execute()))
+    elif target == schemas.EntityTarget.location:
+        return list(map(lambda id: id.id, models.Location.select(models.Location.id).order_by(models.Location.id).execute()))
+    elif target == schemas.EntityTarget.trait:
+        return list(map(lambda id: id.id, models.Trait.select(models.Trait.id).order_by(models.Trait.id).execute()))
+    elif target == schemas.EntityTarget.repetition:
+        return list(map(lambda id: id.repetition, models.RawCollection.select(models.RawCollection.repetition).distinct().order_by(models.RawCollection.repetition).execute()))
+    raise ValueError("Unsupported target")
