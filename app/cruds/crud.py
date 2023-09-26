@@ -29,21 +29,7 @@ def create_unit(unit: schemas.Unit):
     return db_entity
 
 
-def create_trait(trait: schemas.Trait):
-    db_entity = models.Trait.filter(
-        models.Trait.name == trait.name).filter(models.Trait.number == trait.number).first()
-    if db_entity:
-        return db_entity
-    db_entity = models.Trait(
-        name=trait.name,
-        number=trait.number,
-        description=trait.description,
-        co_trait_name=trait.co_trait_name,
-        variable_name=trait.variable_name,
-        co_id=trait.co_id,
-    )
-    db_entity.save()
-    return db_entity
+
 
 
 def create_genotype(genotype: schemas.Genotype):
@@ -57,30 +43,6 @@ def create_genotype(genotype: schemas.Genotype):
         s_id=genotype.s_id,
         cross_name=genotype.cross_name,
         history_name=genotype.history_name,
-    )
-    db_entity.save()
-    return db_entity
-
-
-def create_location(location: schemas.Location):
-    db_entity = models.Location.filter(
-        models.Location.number == location.number
-    ).first()
-    if db_entity:
-        return db_entity
-    db_entity = models.Location(
-        number=location.number,
-        country=location.country,
-        description=location.description,
-        institute_name=location.institute_name,
-        cooperator=location.cooperator,
-        latitude=location.latitude,
-        latitude_degrees=location.latitude_degrees,
-        latitude_minutes=location.latitude_minutes,
-        longitude=location.longitude,
-        longitude_degrees=location.longitude_degrees,
-        longitude_minutes=location.longitude_minutes,
-        altitude=location.altitude,
     )
     db_entity.save()
     return db_entity
@@ -259,18 +221,6 @@ def find_genotype_by_ids(c_id: int, s_id: int):
     return genotype.first()
 
 
-def find_trait_by_number(number: int):
-    trait = models.Trait.filter(models.Trait.number == number).first()
-    if not trait:
-        raise ValueError("The trait does not exist")
-    return trait
-
-
-def find_trait_by_name(name: str):
-    trait = models.Trait.filter(models.Trait.name == name).first()
-    if not trait:
-        raise ValueError("The trait does not exist")
-    return trait
 
 
 def update_trait(id: int, trait: schemas.Trait):
@@ -339,3 +289,4 @@ def special_query_ids(target: schemas.EntityTarget):
     elif target == schemas.EntityTarget.repetition:
         return list(map(lambda id: id.repetition, models.RawCollection.select(models.RawCollection.repetition).distinct().order_by(models.RawCollection.repetition).execute()))
     raise ValueError("Unsupported target")
+
