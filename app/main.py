@@ -201,13 +201,13 @@ def update_trait(id: int, trait: schemas.TraitCreate):
 
 
 @app.post(
-    "/raw_collections/trait/{id}",
+    "/raw_collections/search/",
     response_model=Page[schemas.RawCollection],
     dependencies=[Depends(get_db)],
     tags=["raw_collection"],
-    description="Search by trait and other attributes",
+    description="Search by any attribute",
 )
-def search_raw_collections(id: int, raw_collection: schemas.RawCollectionFilter):
+def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
     return paginate(crud.search_raw_collection(id=id, raw_collection=raw_collection))
 
 add_pagination(app)

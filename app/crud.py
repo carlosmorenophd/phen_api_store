@@ -285,23 +285,45 @@ def update_trait(id: int, trait: schemas.Trait):
 
 
 def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
-    db_trait = models.Trait.filter(models.Trait.id == id).first()
-    if not db_trait:
-        raise ValueError("The trait does not exist")
     query = models.RawCollection.select()
-    query = query.where(models.RawCollection.trait == db_trait)
-    if raw_collection.cycle != "":
-        print("Start to new filter cycle ->{}".format(raw_collection.cycle))
-        query = query.where(models.RawCollection.cycle == raw_collection.cycle)
     if raw_collection.occurrence != 0:
-        print("Start to new filter occurrence ->{}".format(raw_collection.occurrence))
         query = query.where(
             models.RawCollection.occurrence == raw_collection.occurrence)
-    if raw_collection.location_ids:
-        print("Start to new location ->{}".format(raw_collection.occurrence))
-        list_location = []
-        for location_id in raw_collection.location_ids:
-            list_location.append(models.Location.get_by_id(location_id))
-        query = query.where(
-            models.RawCollection.occurrence << list_location)
+    if raw_collection.cycle != "":
+        query = query.where(models.RawCollection.cycle == raw_collection.cycle)
+    if raw_collection.gen_number != 0:
+        query = query.where(models.RawCollection.gen_number ==
+                            raw_collection.gen_number)
+    if raw_collection.repetition != 0:
+        query = query.where(models.RawCollection.repetition ==
+                            raw_collection.repetition)
+    if raw_collection.sub_block != 0:
+        query = query.where(models.RawCollection.sub_block ==
+                            raw_collection.sub_block)
+    if raw_collection.plot != 0:
+        query = query.where(models.RawCollection.plot == raw_collection.plot)
+    if raw_collection.value_data != "":
+        query = query.where(models.RawCollection.value_data ==
+                            raw_collection.value_data)
+    if raw_collection.trail_id != 0:
+        query = query.where(models.RawCollection.trail_id ==
+                            raw_collection.trail_id)
+    if raw_collection.trait_id != 0:
+        query = query.where(models.RawCollection.trait_id ==
+                            raw_collection.trait_id)
+    if raw_collection.genotype_id != 0:
+        query = query.where(models.RawCollection.genotype_id ==
+                            raw_collection.genotype_id)
+    if raw_collection.location_id != 0:
+        query = query.where(models.RawCollection.location_id ==
+                            raw_collection.location_id)
+    if raw_collection.unit_id != 0:
+        query = query.where(models.RawCollection.unit_id ==
+                            raw_collection.unit_id)
+    # if raw_collection.location_ids:
+    #     list_location = []
+    #     for location_id in raw_collection.location_ids:
+    #         list_location.append(models.Location.get_by_id(location_id))
+    #     query = query.where(
+    #         models.RawCollection.occurrence << list_location)
     return query.execute()
