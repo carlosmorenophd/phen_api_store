@@ -254,7 +254,7 @@ def find_location_by_id(id: int):
     except ValueError as err:
         raise HTTPException(
             status_code=404, detail="Location not found") from err
-    
+
 
 @app.get(
     "/genotypes/{id}",

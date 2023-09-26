@@ -29,9 +29,6 @@ def create_unit(unit: schemas.Unit):
     return db_entity
 
 
-
-
-
 def create_genotype(genotype: schemas.Genotype):
     db_entity = models.Genotype.filter(
         models.Genotype.c_id == genotype.c_id).filter(models.Genotype.s_id == genotype.s_id)
@@ -221,19 +218,6 @@ def find_genotype_by_ids(c_id: int, s_id: int):
     return genotype.first()
 
 
-
-
-def update_trait(id: int, trait: schemas.Trait):
-    db_entity = models.Trait.filter(models.Trait.id == id).first()
-    if not db_entity:
-        raise ValueError("The trait does not exist")
-    db_entity.co_trait_name = trait.co_trait_name
-    db_entity.variable_name = trait.variable_name
-    db_entity.co_id = trait.co_id
-    db_entity.save()
-    return db_entity
-
-
 def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
     query = models.RawCollection.select()
     if raw_collection.occurrence != 0:
@@ -289,4 +273,3 @@ def special_query_ids(target: schemas.EntityTarget):
     elif target == schemas.EntityTarget.repetition:
         return list(map(lambda id: id.repetition, models.RawCollection.select(models.RawCollection.repetition).distinct().order_by(models.RawCollection.repetition).execute()))
     raise ValueError("Unsupported target")
-
