@@ -1,13 +1,6 @@
 from app import models, schemas
 
 
-def find_by_id(id: int):
-    try:
-        return models.Trait.get_by_id(id)
-    except Exception:
-        raise ValueError("Trait can not found")
-
-
 def create(trait: schemas.Trait):
     db_entity = models.Trait.filter(
         models.Trait.name == trait.name).filter(models.Trait.number == trait.number).first()
@@ -25,6 +18,24 @@ def create(trait: schemas.Trait):
     return db_entity
 
 
+def update(id: int, trait: schemas.Trait):
+    db_entity = models.Trait.filter(models.Trait.id == id).first()
+    if not db_entity:
+        raise ValueError("The trait does not exist")
+    db_entity.co_trait_name = trait.co_trait_name
+    db_entity.variable_name = trait.variable_name
+    db_entity.co_id = trait.co_id
+    db_entity.save()
+    return db_entity
+
+
+def find_by_id(id: int):
+    try:
+        return models.Trait.get_by_id(id)
+    except Exception:
+        raise ValueError("Trait can not found")
+
+
 def find_by_number(number: int):
     trait = models.Trait.filter(models.Trait.number == number).first()
     if not trait:
@@ -37,14 +48,3 @@ def find_by_name(name: str):
     if not trait:
         raise ValueError("The trait does not exist")
     return trait
-
-
-def update(id: int, trait: schemas.Trait):
-    db_entity = models.Trait.filter(models.Trait.id == id).first()
-    if not db_entity:
-        raise ValueError("The trait does not exist")
-    db_entity.co_trait_name = trait.co_trait_name
-    db_entity.variable_name = trait.variable_name
-    db_entity.co_id = trait.co_id
-    db_entity.save()
-    return db_entity
