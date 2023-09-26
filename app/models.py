@@ -109,10 +109,13 @@ class VariableOntology(Model):
     synonyms = TextField()
     growth_stage = TextField()
     observation_variable_db_id = CharField()
-    trait_ontology = ForeignKeyField(TraitOntology, backref="variable_ontologies")
+    trait_ontology = ForeignKeyField(
+        TraitOntology, backref="variable_ontologies")
     trait = ForeignKeyField(Trait, backref="variable_ontology")
-    method_ontology = ForeignKeyField(MethodOntology, backref="variable_ontologies")
-    scale_ontology = ForeignKeyField(ScaleOntology, backref="variable_ontologies")
+    method_ontology = ForeignKeyField(
+        MethodOntology, backref="variable_ontologies")
+    scale_ontology = ForeignKeyField(
+        ScaleOntology, backref="variable_ontologies")
 
     class Meta:
         database = db

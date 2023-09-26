@@ -282,3 +282,48 @@ def update_trait(id: int, trait: schemas.Trait):
     db_entity.co_id = trait.co_id
     db_entity.save()
     return db_entity
+
+
+def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
+    query = models.RawCollection.select()
+    if raw_collection.occurrence != 0:
+        query = query.where(
+            models.RawCollection.occurrence == raw_collection.occurrence)
+    if raw_collection.cycle != "":
+        query = query.where(models.RawCollection.cycle == raw_collection.cycle)
+    if raw_collection.gen_number != 0:
+        query = query.where(models.RawCollection.gen_number ==
+                            raw_collection.gen_number)
+    if raw_collection.repetition != 0:
+        query = query.where(models.RawCollection.repetition ==
+                            raw_collection.repetition)
+    if raw_collection.sub_block != 0:
+        query = query.where(models.RawCollection.sub_block ==
+                            raw_collection.sub_block)
+    if raw_collection.plot != 0:
+        query = query.where(models.RawCollection.plot == raw_collection.plot)
+    if raw_collection.value_data != "":
+        query = query.where(models.RawCollection.value_data ==
+                            raw_collection.value_data)
+    if raw_collection.trail_id != 0:
+        query = query.where(models.RawCollection.trail_id ==
+                            raw_collection.trail_id)
+    if raw_collection.trait_id != 0:
+        query = query.where(models.RawCollection.trait_id ==
+                            raw_collection.trait_id)
+    if raw_collection.genotype_id != 0:
+        query = query.where(models.RawCollection.genotype_id ==
+                            raw_collection.genotype_id)
+    if raw_collection.location_id != 0:
+        query = query.where(models.RawCollection.location_id ==
+                            raw_collection.location_id)
+    if raw_collection.unit_id != 0:
+        query = query.where(models.RawCollection.unit_id ==
+                            raw_collection.unit_id)
+    # if raw_collection.location_ids:
+    #     list_location = []
+    #     for location_id in raw_collection.location_ids:
+    #         list_location.append(models.Location.get_by_id(location_id))
+    #     query = query.where(
+    #         models.RawCollection.occurrence << list_location)
+    return query.execute()
