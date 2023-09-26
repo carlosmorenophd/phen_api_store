@@ -297,4 +297,11 @@ def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
         print("Start to new filter occurrence ->{}".format(raw_collection.occurrence))
         query = query.where(
             models.RawCollection.occurrence == raw_collection.occurrence)
+    if raw_collection.location_ids:
+        print("Start to new location ->{}".format(raw_collection.occurrence))
+        list_location = []
+        for location_id in raw_collection.location_ids:
+            list_location.append(models.Location.get_by_id(location_id))
+        query = query.where(
+            models.RawCollection.occurrence << list_location)
     return query.execute()

@@ -1,7 +1,7 @@
 from typing import Any
 
 from peewee import ModelSelect
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic.utils import GetterDict
 
 
@@ -241,12 +241,11 @@ class RawCollectionBase(BaseModel):
     value_data: str
 
 
-class RawCollectionFilter(RawCollectionBase):
-    trail_ids: list[int]
-    trait_ids: list[int]
-    genotype_ids: list[int]
-    location_ids: list[int]
-    unit_ids: list[int]
+class RawCollectionFilter(BaseModel):
+    occurrence: int | None = Field(default=0)
+    cycle: str | None = Field(default="")
+    location_ids: list[int] | None = Field(default=None)
+
 
 class RawCollectionCreate(RawCollectionBase):
     trail_id: int

@@ -205,6 +205,7 @@ def update_trait(id: int, trait: schemas.TraitCreate):
     response_model=Page[schemas.RawCollection],
     dependencies=[Depends(get_db)],
     tags=["raw_collection"],
+    description="Search by trait and other attributes",
 )
 def search_raw_collections(id: int, raw_collection: schemas.RawCollectionFilter):
     return paginate(crud.search_raw_collection(id=id, raw_collection=raw_collection))
