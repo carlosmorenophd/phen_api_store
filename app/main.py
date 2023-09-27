@@ -217,7 +217,7 @@ def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
 
 @app.get(
     "/special_query/ids/{target}",
-    response_model=list[int],
+    response_model=list[schemas.ResponseTarget],
     dependencies=[Depends(get_db)],
     tags=["special_query"],
     description="Get all id on database",

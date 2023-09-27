@@ -283,3 +283,9 @@ class EntityTarget(str, Enum):
     trait = "trait"
     repetition = "repetition"
     location = "location"
+    cycle = "cycle"
+
+
+class ResponseTarget (BaseModel):
+    id: int
+    name: str
