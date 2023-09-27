@@ -267,7 +267,7 @@ def special_query_ids(target: schemas.EntityTarget) -> list[schemas.ResponseTarg
     if target == schemas.EntityTarget.genotype:
         return list(map(lambda id: schemas.ResponseTarget(id=id.id, name=id.cross_name), models.Genotype.select(models.Genotype.id, models.Genotype.cross_name).order_by(models.Genotype.id).execute()))
     elif target == schemas.EntityTarget.location:
-        return list(map(lambda id: schemas.ResponseTarget(id=id.id, name=id.name), models.Location.select(models.Location.id, models.Location.name).order_by(models.Location.id).execute()))
+        return list(map(lambda id: schemas.ResponseTarget(id=id.id, name=id.description), models.Location.select(models.Location.id, models.Location.description).order_by(models.Location.id).execute()))
     elif target == schemas.EntityTarget.trait:
         return list(map(lambda id: schemas.ResponseTarget(id=id.id, name=id.name), models.Trait.select(models.Trait.id, models.Trait.name).order_by(models.Trait.id).execute()))
     elif target == schemas.EntityTarget.repetition:
