@@ -263,7 +263,6 @@ def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
     return query.execute()
 
 
-<<<<<<< HEAD:app/cruds/crud.py
 def special_query_ids(target: schemas.EntityTarget) -> list[schemas.ResponseTarget]:
     if target == schemas.EntityTarget.genotype:
         return list(map(lambda id: schemas.ResponseTarget(id=id.id, name=id.cross_name), models.Genotype.select(models.Genotype.id, models.Genotype.cross_name).order_by(models.Genotype.id).execute()))
@@ -276,7 +275,6 @@ def special_query_ids(target: schemas.EntityTarget) -> list[schemas.ResponseTarg
     elif target == schemas.EntityTarget.cycle:
         return list(map(lambda id: schemas.ResponseTarget(id=int(id.cycle), name=id.cycle), models.RawCollection.select(models.RawCollection.cycle).distinct().order_by(models.RawCollection.cycle).execute()))
     raise ValueError("Unsupported target")
-=======
 def find_trait_by_name(name: str):
     trait = models.Trait.filter(models.Trait.name == name).first()
     if not trait:
@@ -299,4 +297,3 @@ def get_raw_join_all(genotype_id: int, cycle: str)-> str:
     for row in cursor.fetchall():
         print(row)
     return "OK"
->>>>>>> main:app/crud.py
