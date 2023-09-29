@@ -271,4 +271,14 @@ def find_genotype_by_id(id: int):
             status_code=404, detail="Genotype not found") from err
 
 
+@app.post(
+    "/raw/{genotype_id}/{cycle}",
+    response_model=str,
+    dependencies=[Depends(get_db)],
+    tags=["Raw"]
+)
+def get_raw_by_genotype_id(genotype_id: int, cycle: str):
+    return crud.get_raw_join_all(genotype_id=genotype_id, cycle=cycle)
+
+
 add_pagination(app)
