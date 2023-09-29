@@ -275,6 +275,8 @@ def special_query_ids(target: schemas.EntityTarget) -> list[schemas.ResponseTarg
     elif target == schemas.EntityTarget.cycle:
         return list(map(lambda id: schemas.ResponseTarget(id=int(id.cycle), name=id.cycle), models.RawCollection.select(models.RawCollection.cycle).distinct().order_by(models.RawCollection.cycle).execute()))
     raise ValueError("Unsupported target")
+
+
 def find_trait_by_name(name: str):
     trait = models.Trait.filter(models.Trait.name == name).first()
     if not trait:
@@ -291,9 +293,3 @@ def update_trait(id: int, trait: schemas.Trait):
     db_entity.co_id = trait.co_id
     db_entity.save()
     return db_entity
-
-def get_raw_join_all(genotype_id: int, cycle: str)-> str:
-    cursor = models.db.execute_sql("SELECT id, occurrence, `cycle`, gen_number, repetition, sub_block, plot, genotype_id, location_id, value_1, value_2, value_3, value_4, value_5, value_6, value_7, value_8, value_9, value_10, value_11, value_12, value_13, value_14, value_15, value_16, value_17, value_18, value_19, value_20, value_21, value_22, value_23, value_24, value_25, value_26, value_27, value_28, value_29, value_30, value_31, value_32, value_33, value_34, value_35, value_36, value_37, value_38, value_39, value_40, value_41, value_42, value_43, value_44, value_45, value_46, value_47, value_48, value_49, value_50, value_51, value_52, value_53, value_54, value_55, value_56, value_57, value_58, value_59, value_60, value_61, value_62, value_63, value_64, value_65, value_66 FROM phenotipyc_db.raw_all_join WHERE genotype_id = {} AND `cycle`= {};".format(genotype_id, cycle))
-    for row in cursor.fetchall():
-        print(row)
-    return "OK"

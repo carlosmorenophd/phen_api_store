@@ -3,7 +3,7 @@ from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 
 from app import database, models, schemas
-from app.cruds import crud, traitCrud, locationCrud, genotypeCrud
+from app.cruds import crud, traitCrud, locationCrud, genotypeCrud, rawCrud
 from app.database import db_state_default
 from fastapi_pagination import Page, add_pagination, paginate
 
@@ -272,13 +272,13 @@ def find_genotype_by_id(id: int):
 
 
 @app.post(
-    "/raw/{genotype_id}/{cycle}",
+    "/raw_all/search",
     response_model=str,
     dependencies=[Depends(get_db)],
     tags=["Raw"]
 )
-def get_raw_by_genotype_id(genotype_id: int, cycle: str):
-    return crud.get_raw_join_all(genotype_id=genotype_id, cycle=cycle)
+def get_raw_by_genotype_id(raw_filter: schemas.RawAllFilter):
+    return rawCrud.get_raw_join_all(raw_filter=raw_filter)
 
 
 add_pagination(app)
