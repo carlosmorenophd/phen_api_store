@@ -191,3 +191,13 @@ def update_trait(id: int, trait: schemas.TraitCreate):
         return crud.update_trait(id=id, trait=trait)
     except ValueError as err:
         raise HTTPException(status_code=404, detail="Trait not found") from err
+
+
+@app.post(
+    "/raw/{genotype_id}/{cycle}",
+    response_model=str,
+    dependencies=[Depends(get_db)],
+    tags=["Raw"]
+)
+def get_raw_by_genotype_id(genotype_id: int, cycle: str):
+    return crud.get_raw_join_all(genotype_id=genotype_id, cycle=cycle)
