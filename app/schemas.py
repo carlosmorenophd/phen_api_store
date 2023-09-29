@@ -289,3 +289,7 @@ class EntityTarget(str, Enum):
 class ResponseTarget (BaseModel):
     id: int
     name: str
+
+
+class RawAllFilter(BaseModel):
+    ids: list[int]
