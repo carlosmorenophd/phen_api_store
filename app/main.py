@@ -5,6 +5,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from app import database, models, schemas
 from app.cruds import crud, traitCrud, locationCrud, genotypeCrud, rawCrud
 from app.database import db_state_default
+from app.services import rawService
 from fastapi_pagination import Page, add_pagination, paginate
 
 database.db.connect()
@@ -278,7 +279,7 @@ def find_genotype_by_id(id: int):
     tags=["Raw"]
 )
 def get_raw_by_genotype_id(raw_filter: schemas.RawAllFilter):
-    return rawCrud.get_raw_join_all(raw_filter=raw_filter)
+    return rawService.get_raw_join_all(raw_filter=raw_filter)
 
 
 add_pagination(app)
