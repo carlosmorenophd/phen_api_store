@@ -293,3 +293,5 @@ class ResponseTarget (BaseModel):
 
 class RawAllFilter(BaseModel):
     ids: list[int]
+    is_details: bool = False
+    trait_ids: list[int]

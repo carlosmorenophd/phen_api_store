@@ -276,10 +276,21 @@ def find_genotype_by_id(id: int):
     "/raw_all/search",
     response_model=str,
     dependencies=[Depends(get_db)],
-    tags=["Raw"]
+    tags=["Raw"],
+    deprecated="23-10-02- To delete use /raw_all/trait"
 )
 def get_raw_by_genotype_id(raw_filter: schemas.RawAllFilter):
     return rawService.get_raw_join_all(raw_filter=raw_filter)
+
+
+@app.post(
+    "/raw_all/trait",
+    response_model=str,
+    dependencies=[Depends(get_db)],
+    tags=["Raw"]
+)
+def get_raw_by_genotype_id_all_trait(raw_filter: schemas.RawAllFilter):
+    return rawService.get_raw_join_all_trait(raw_filter=raw_filter)
 
 
 add_pagination(app)
