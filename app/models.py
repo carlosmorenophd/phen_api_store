@@ -160,7 +160,7 @@ class RawCollection(Model):
     plot = IntegerField()
     trait = ForeignKeyField(Trait, backref="raw_collections")
     unit = ForeignKeyField(Unit, backref="raw_collections")
-    field = ForeignKeyField(Field, backref="raw_collections")
+    field = ForeignKeyField(FieldCollection, backref="raw_collections")
     value_data = CharField()
 
     class Meta:

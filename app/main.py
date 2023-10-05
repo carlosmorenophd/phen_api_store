@@ -6,6 +6,7 @@ from app import database, models, schemas
 from app.cruds import crud, traitCrud, locationCrud, genotypeCrud
 from app.database import db_state_default
 from app.services import rawService
+from app.routes import fieldCollectionRoute
 from fastapi_pagination import Page, add_pagination, paginate
 
 database.db.connect()
@@ -31,7 +32,7 @@ app = FastAPI()
 
 sleep_time = 10
 
-app.include_router()
+app.include_router(fieldCollectionRoute)
 
 
 async def reset_db_state():
