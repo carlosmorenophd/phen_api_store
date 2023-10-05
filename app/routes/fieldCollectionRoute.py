@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app import schemas, database
-from app.database import db_state_default
+from app import schemas
 from app.cruds import fieldCollectionCrud
+from app.dependencies import get_db
 
 
 router = APIRouter(
@@ -11,28 +11,17 @@ router = APIRouter(
 )
 
 
-async def reset_db_state():
-    database.db._state._state.set(db_state_default.copy())
-    database.db._state.reset()
-
-
-def get_db(db_state=Depends(reset_db_state)):
-    try:
-        database.db.connect()
-        yield
-    finally:
-        if not database.db.is_closed():
-            database.db.close()
-
-
 @router.post(
     "/",
     response_model=schemas.FieldCollection,
-    dependencies=[Depends(get_db)]
+    dependencies=[Depends(get_db)],
+    description="Create a new field collection"
 )
 def create(field_collection: schemas.FieldCollectionCreate):
     try:
         return fieldCollectionCrud.create(field_collection=field_collection)
     except ValueError as err:
         raise HTTPException(
-            status_code=404, detail="Crop trait not found") from err
+            status_code=404,
+            detail="Some attributes can't be founded"
+        ) from err

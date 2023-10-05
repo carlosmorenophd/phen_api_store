@@ -285,8 +285,8 @@ class FieldCollectionEnvironmentCreate(FieldCollectionEnvironmentBase):
 class FieldCollectionEnvironment(FieldCollectionEnvironmentBase):
     id: int
     field_collection: FieldCollection
-    environment_definition = EnvironmentDefinition
-    unit = Unit
+    environment_definition: EnvironmentDefinition
+    unit: Unit
 
     class Config:
         orm_mode = True

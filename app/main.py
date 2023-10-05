@@ -1,13 +1,17 @@
 from typing import List
-
 from fastapi import Depends, FastAPI, HTTPException
-
-from app import database, models, schemas
-from app.cruds import crud, traitCrud, locationCrud, genotypeCrud
-from app.database import db_state_default
-from app.services import rawService
-from app.routes import fieldCollectionRoute
 from fastapi_pagination import Page, add_pagination, paginate
+from app import database, models, schemas
+from app.cruds import crud, locationCrud, genotypeCrud
+from app.services import rawService
+from app.routes import (
+    fieldCollectionRoute,
+    fieldCollectionEnvironmentRoute,
+    environmentDefinitionRoute,
+    traitRoute,
+)
+from app.dependencies import get_db
+
 
 database.db.connect()
 database.db.create_tables(
@@ -23,6 +27,9 @@ database.db.create_tables(
         models.MethodOntology,
         models.ScaleOntology,
         models.VariableOntology,
+        models.FieldCollection,
+        models.EnvironmentDefinition,
+        models.FieldCollectionEnvironment,
         models.RawCollection,
     ]
 )
@@ -32,21 +39,10 @@ app = FastAPI()
 
 sleep_time = 10
 
-app.include_router(fieldCollectionRoute)
-
-
-async def reset_db_state():
-    database.db._state._state.set(db_state_default.copy())
-    database.db._state.reset()
-
-
-def get_db(db_state=Depends(reset_db_state)):
-    try:
-        database.db.connect()
-        yield
-    finally:
-        if not database.db.is_closed():
-            database.db.close()
+app.include_router(fieldCollectionRoute.router)
+app.include_router(fieldCollectionEnvironmentRoute.router)
+app.include_router(environmentDefinitionRoute.router)
+app.include_router(traitRoute.router)
 
 
 @app.post(
@@ -76,17 +72,6 @@ def create_trail(trail: schemas.TrailCreate):
 )
 def create_unit(unit: schemas.UnitCreate):
     return crud.create_unit(unit=unit)
-
-
-@app.post(
-    "/traits/",
-    response_model=schemas.Trait,
-    dependencies=[Depends(get_db)],
-    tags=["Trait"],
-    description="Create a new Trait"
-)
-def create_trait(trait: schemas.TraitCreate):
-    return traitCrud.create(trait=trait)
 
 
 @app.post(
@@ -206,32 +191,6 @@ def find_genotype_by_ids(c_id: int, s_id: int):
             status_code=404, detail="Genotype not found") from err
 
 
-@app.get(
-    "/traits/",
-    response_model=schemas.Trait,
-    dependencies=[Depends(get_db)],
-    tags=["Trait"],
-)
-def find_trait_by_name(name: str):
-    try:
-        return traitCrud.find_by_name(name=name)
-    except ValueError as err:
-        raise HTTPException(status_code=404, detail="Trait not found") from err
-
-
-@app.put(
-    "/traits/{id}",
-    response_model=schemas.Trait,
-    dependencies=[Depends(get_db)],
-    tags=["Trait"],
-)
-def update_trait(id: int, trait: schemas.TraitCreate):
-    try:
-        return traitCrud.update(id=id, trait=trait)
-    except ValueError as err:
-        raise HTTPException(status_code=404, detail="Trait not found") from err
-
-
 @app.post(
     "/raw_collections/search/",
     response_model=Page[schemas.RawCollection],
@@ -255,21 +214,6 @@ def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
 )
 def search_raw_collections_query(target: schemas.EntityTarget):
     return crud.special_query_ids(target=target)
-
-
-@app.get(
-    "/traits/{id}",
-    response_model=schemas.Trait,
-    dependencies=[Depends(get_db)],
-    tags=["Trait"],
-    description="Get trait by id",
-)
-def find_trait_by_id(id: int):
-    try:
-        return traitCrud.find_by_id(id=id)
-    except ValueError as err:
-        raise HTTPException(
-            status_code=404, detail="Trait not found") from err
 
 
 @app.get(
