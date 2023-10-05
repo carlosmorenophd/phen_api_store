@@ -1,6 +1,4 @@
-from app import models, schemas
-from csv import writer
-import os
+from app import models
 
 # TODO: Convertir en dinamica para poder seleccionar con una lista de traits
 # TODO: soportar la unidad dentro de los traits
