@@ -121,20 +121,47 @@ class VariableOntology(Model):
         database = db
 
 
+class FieldCollection(Model):
+    cycle = CharField(max_length=4)
+    gen_number = IntegerField()
+    genotype = ForeignKeyField(Genotype, backref="field_collections")
+    location = ForeignKeyField(Location, backref="field_collections")
+    trail = ForeignKeyField(Trail, backref="field_collections")
+
+    class Meta:
+        database = db
+
+
+class EnvironmentDefinition(Model):
+    trait_no = IntegerField()
+    trait_name = CharField(max_length=300)
+
+    class Meta:
+        database = db
+
+
+class FieldCollectionEnvironment(Model):
+    field_collection = ForeignKeyField(
+        FieldCollection, backref="field_environments")
+    environment_definition = ForeignKeyField(
+        EnvironmentDefinition, backref="field_environments")
+    unit = ForeignKeyField(Unit, backref="field_environments")
+    value_data = CharField(max_length=200)
+
+    class Meta:
+        database = db
+
+
 class RawCollection(Model):
     hash_raw = CharField(max_length=500)
     occurrence = IntegerField()
-    cycle = CharField()
-    gen_number = IntegerField()
     repetition = IntegerField()
     sub_block = IntegerField()
     plot = IntegerField()
-    value_data = CharField()
-    trail = ForeignKeyField(Trail, backref="raw_collections")
     trait = ForeignKeyField(Trait, backref="raw_collections")
-    genotype = ForeignKeyField(Genotype, backref="raw_collections")
-    location = ForeignKeyField(Location, backref="raw_collections")
     unit = ForeignKeyField(Unit, backref="raw_collections")
+    field = ForeignKeyField(Field, backref="raw_collections")
+    value_data = CharField()
 
     class Meta:
         database = db

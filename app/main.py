@@ -3,7 +3,7 @@ from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 
 from app import database, models, schemas
-from app.cruds import crud, traitCrud, locationCrud, genotypeCrud, rawCrud
+from app.cruds import crud, traitCrud, locationCrud, genotypeCrud
 from app.database import db_state_default
 from app.services import rawService
 from fastapi_pagination import Page, add_pagination, paginate
@@ -31,6 +31,8 @@ app = FastAPI()
 
 sleep_time = 10
 
+app.include_router()
+
 
 async def reset_db_state():
     database.db._state._state.set(db_state_default.copy())
@@ -46,22 +48,42 @@ def get_db(db_state=Depends(reset_db_state)):
             database.db.close()
 
 
-@app.post("/web_files/", response_model=schemas.WebFile, dependencies=[Depends(get_db)])
+@app.post(
+    "/web_files/",
+    response_model=schemas.WebFile,
+    dependencies=[Depends(get_db)]
+)
 def create_web_file(web_file: schemas.WebFileCreate):
     return crud.create_web_file(web_file=web_file)
 
 
-@app.post("/trails/", response_model=schemas.Trail, dependencies=[Depends(get_db)], tags=["Trail"], description="Create a new Trail")
+@app.post(
+    "/trails/",
+    response_model=schemas.Trail,
+    dependencies=[Depends(get_db)],
+    tags=["Trail"],
+    description="Create a new Trail"
+)
 def create_trail(trail: schemas.TrailCreate):
     return crud.create_trail(trail=trail)
 
 
-@app.post("/units/", response_model=schemas.Unit, dependencies=[Depends(get_db)])
+@app.post(
+    "/units/",
+    response_model=schemas.Unit,
+    dependencies=[Depends(get_db)]
+)
 def create_unit(unit: schemas.UnitCreate):
     return crud.create_unit(unit=unit)
 
 
-@app.post("/traits/", response_model=schemas.Trait, dependencies=[Depends(get_db)], tags=["Trait"], description="Create a new Trait")
+@app.post(
+    "/traits/",
+    response_model=schemas.Trait,
+    dependencies=[Depends(get_db)],
+    tags=["Trait"],
+    description="Create a new Trait"
+)
 def create_trait(trait: schemas.TraitCreate):
     return traitCrud.create(trait=trait)
 
@@ -76,7 +98,11 @@ def create_genotype(genotype: schemas.GenotypeCreate):
 
 
 @app.post(
-    "/locations/", response_model=schemas.Location, dependencies=[Depends(get_db)], tags=["Location"], description="Create a new Location"
+    "/locations/",
+    response_model=schemas.Location,
+    dependencies=[Depends(get_db)],
+    tags=["Location"],
+    description="Create a new Location"
 )
 def create_location(location: schemas.LocationCreate):
     return locationCrud.create_location(location=location)
@@ -213,7 +239,10 @@ def update_trait(id: int, trait: schemas.TraitCreate):
     description="Search by any attribute",
 )
 def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
-    return paginate(crud.search_raw_collection(id=id, raw_collection=raw_collection))
+    return paginate(crud.search_raw_collection(
+        id=id,
+        raw_collection=raw_collection
+    ))
 
 
 @app.get(
@@ -223,7 +252,7 @@ def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
     tags=["special_query"],
     description="Get all id on database",
 )
-def search_raw_collections(target: schemas.EntityTarget):
+def search_raw_collections_query(target: schemas.EntityTarget):
     return crud.special_query_ids(target=target)
 
 
