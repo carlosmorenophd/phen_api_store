@@ -231,6 +231,68 @@ class VariableOntology(VariableOntologyBase):
         getter_dict = PeeweeGetterDict
 
 
+class FieldCollectionBase(BaseModel):
+    cycle: str
+    gen_number: int
+
+
+class FieldCollectionCreate(FieldCollectionBase):
+    trail_id: int
+    trait_id: int
+    genotype_id: int
+    location_id: int
+    unit_id: int
+
+
+class FieldCollection(FieldCollectionBase):
+    id: int
+    trail: Trail
+    genotype: Genotype
+    location: Location
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
+
+class EnvironmentDefinitionBase(BaseModel):
+    trait_no: int
+    trait_name: str
+
+
+class EnvironmentDefinitionCreate(EnvironmentDefinitionBase):
+    pass
+
+
+class EnvironmentDefinition(EnvironmentDefinitionBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
+
+class FieldCollectionEnvironmentBase(BaseModel):
+    value_data: str
+
+
+class FieldCollectionEnvironmentCreate(FieldCollectionEnvironmentBase):
+    field_collection_id: int
+    environment_definition_id: int
+    unit_id: int
+
+
+class FieldCollectionEnvironment(FieldCollectionEnvironmentBase):
+    id: int
+    field_collection: FieldCollection
+    environment_definition: EnvironmentDefinition
+    unit: Unit
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeeweeGetterDict
+
+
 class RawCollectionBase(BaseModel):
     hash_raw: str
     occurrence: int

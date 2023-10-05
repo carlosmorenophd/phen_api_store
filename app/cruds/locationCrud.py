@@ -17,7 +17,6 @@ def create(location: schemas.Location):
     db_entity = models.Location(
         number=location.number,
         country=location.country,
-        description=location.description,
         institute_name=location.institute_name,
         cooperator=location.cooperator,
         latitude=location.latitude,
