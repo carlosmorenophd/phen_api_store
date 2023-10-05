@@ -140,7 +140,9 @@ def create_scale_ontology(scale_ontology: schemas.ScaleOntologyCreate):
     dependencies=[Depends(get_db)],
     tags=["Variable Ontologies"]
 )
-def create_variable_ontology(variable_ontology: schemas.VariableOntologyCreate):
+def create_variable_ontology(
+    variable_ontology: schemas.VariableOntologyCreate
+):
     return crud.create_variable_ontology(variable_ontology=variable_ontology)
 
 

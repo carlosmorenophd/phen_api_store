@@ -232,14 +232,13 @@ class VariableOntology(VariableOntologyBase):
 
 
 class FieldCollectionBase(BaseModel):
-    cycle: str
+    occurrence: int
+    cycle_year: str
     gen_number: int
 
 
 class FieldCollectionCreate(FieldCollectionBase):
     trail_id: int
-    trait_id: int
-    genotype_id: int
     location_id: int
     unit_id: int
 
@@ -247,7 +246,6 @@ class FieldCollectionCreate(FieldCollectionBase):
 class FieldCollection(FieldCollectionBase):
     id: int
     trail: Trail
-    genotype: Genotype
     location: Location
 
     class Config:
@@ -295,7 +293,7 @@ class FieldCollectionEnvironment(FieldCollectionEnvironmentBase):
 
 class RawCollectionBase(BaseModel):
     hash_raw: str
-    occurrence: int
+    gen_number: int
     cycle: str
     gen_number: int
     repetition: int
@@ -305,19 +303,17 @@ class RawCollectionBase(BaseModel):
 
 
 class RawCollectionCreate(RawCollectionBase):
-    trail_id: int
     trait_id: int
     genotype_id: int
-    location_id: int
+    field_collection_id: int
     unit_id: int
 
 
 class RawCollection(RawCollectionBase):
     id: int
-    trail: Trail
     trait: Trait
     genotype: Genotype
-    location: Location
+    field_collection: FieldCollection
     unit: Unit
 
     class Config:

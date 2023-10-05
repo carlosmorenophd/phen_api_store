@@ -121,9 +121,8 @@ class VariableOntology(Model):
 
 
 class FieldCollection(Model):
+    occurrence = IntegerField()
     cycle_year = CharField(max_length=4)
-    gen_number = IntegerField()
-    genotype = ForeignKeyField(Genotype, backref="field_collections")
     location = ForeignKeyField(Location, backref="field_collections")
     trail = ForeignKeyField(Trail, backref="field_collections")
     description = TextField()
@@ -158,7 +157,6 @@ class FieldCollectionEnvironment(Model):
 
 class RawCollection(Model):
     hash_raw = CharField(max_length=500)
-    occurrence = IntegerField()
     repetition = IntegerField()
     sub_block = IntegerField()
     plot = IntegerField()
@@ -172,6 +170,10 @@ class RawCollection(Model):
         FieldCollection, backref="raw_collections"
     )
     value_data = CharField()
+    gen_number = IntegerField()
+    genotype = ForeignKeyField(
+        Genotype, backref="field_collections"
+    )
 
     class Meta:
         database = db

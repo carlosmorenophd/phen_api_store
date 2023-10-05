@@ -11,8 +11,10 @@ LEFT JOIN genotype g ON g.id =raj.genotype_id \
 LEFT JOIN location l ON l.id = raj.location_id "
 
 
-query_basic_select = "SELECT raj.id, raj.occurrence, raj.`cycle`, raj.gen_number, raj.repetition, raj.sub_block, raj.plot, raj.genotype_id, raj.location_id, \
-g.cross_name, l.country , l.description , l.institute_name "
+query_basic_select = "SELECT raj.id, raj.occurrence, raj.`cycle`, \
+    raj.gen_number, raj.repetition, raj.sub_block, raj.plot, \
+    raj.genotype_id, raj.location_id, g.cross_name, l.country, \
+    l.description , l.institute_name "
 query_basic_from = " FROM raw_all_join raj \
 LEFT JOIN genotype g ON g.id =raj.genotype_id \
 LEFT JOIN location l ON l.id = raj.location_id "
