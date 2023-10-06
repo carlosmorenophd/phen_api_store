@@ -19,7 +19,7 @@ router = APIRouter(
 )
 def create(environment_definition: schemas.EnvironmentDefinitionCreate):
     try:
-        return environmentDefinitionCrud.create(
+        return environmentDefinitionCrud.get_or_create(
             environment_definition=environment_definition
         )
     except ValueError as err:

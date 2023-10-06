@@ -5,14 +5,13 @@ from fastapi_pagination import Page, add_pagination, paginate
 from app import database
 from app import models
 from app.schemas import schemas, customs
-from app.cruds import crud, locationCrud, genotypeCrud
+from app.cruds import crud, locationCrud, genotypeCrud, unitCrud, webFileCrud
 from app.services import rawService
 from app.routes import (
     fieldCollectionRoute,
     fieldCollectionEnvironmentRoute,
     environmentDefinitionRoute,
     traitRoute,
-    environmentRoute,
 )
 from app.dependencies import get_db
 
@@ -43,11 +42,10 @@ app = FastAPI()
 
 sleep_time = 10
 
-app.include_router(fieldCollectionRoute.router)
-app.include_router(fieldCollectionEnvironmentRoute.router)
 app.include_router(environmentDefinitionRoute.router)
+app.include_router(fieldCollectionEnvironmentRoute.router)
+app.include_router(fieldCollectionRoute.router)
 app.include_router(traitRoute.router)
-app.include_router(environmentRoute.router)
 
 
 @app.post(
@@ -56,7 +54,7 @@ app.include_router(environmentRoute.router)
     dependencies=[Depends(get_db)]
 )
 def create_web_file(web_file: schemas.WebFileCreate):
-    return crud.create_web_file(web_file=web_file)
+    return webFileCrud.get_or_create(web_file=web_file)
 
 
 @app.post(
@@ -76,7 +74,7 @@ def create_trail(trail: schemas.TrailCreate):
     dependencies=[Depends(get_db)]
 )
 def create_unit(unit: schemas.UnitCreate):
-    return crud.create_unit(unit=unit)
+    return unitCrud.get_or_create(unit=unit)
 
 
 @app.post(
