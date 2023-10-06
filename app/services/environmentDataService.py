@@ -2,6 +2,8 @@ from app.schemas import customs
 from app import models
 from app.cruds import locationCrud, trailCrud
 
+# TODO: Relatione with file web
+# TODO: finish to create a field environment with value
 
 def save_environment_data(environment_data: customs.EnvironmentData) -> str:
     db_location = locationCrud.find_by_country_number(
