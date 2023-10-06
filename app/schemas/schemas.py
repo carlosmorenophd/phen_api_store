@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Union
 from peewee import ModelSelect
 from pydantic import BaseModel
 from pydantic.utils import GetterDict
@@ -103,16 +103,15 @@ class Genotype(GenotypeBase):
 class LocationBase(BaseModel):
     number: int
     country: str
-    description: str
     institute_name: str
     cooperator: str
-    latitude: str
-    latitude_degrees: int
-    latitude_minutes: int
-    longitude: str
-    longitude_degrees: int
-    longitude_minutes: int
-    altitude: int
+    latitude: Union[str, None]
+    latitude_degrees: Union[int, None]
+    latitude_minutes: Union[int, None]
+    longitude: Union[str, None]
+    longitude_degrees: Union[int, None]
+    longitude_minutes: Union[int, None]
+    altitude: Union[int, None]
 
 
 class LocationCreate(LocationBase):

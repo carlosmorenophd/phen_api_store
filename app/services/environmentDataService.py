@@ -1,14 +1,13 @@
 from app.schemas import customs, schemas
 from app.cruds import (
+    environmentDefinitionCrud,
+    fieldCollectionCrud,
+    fieldCollectionEnvironmentCrud,
     locationCrud,
     trailCrud,
-    environmentDefinitionCrud,
     unitCrud,
-    fieldCollectionCrud,
     webFileCrud,
 )
-
-# TODO: finish to create a field environment with value
 
 
 def save_environment_data(environment_data: customs.EnvironmentData) -> str:
@@ -53,5 +52,14 @@ def save_environment_data(environment_data: customs.EnvironmentData) -> str:
             web_file_id=db_web_file.id,
         )
     )
-
-    return "OK"
+    db_field_collection_environment = fieldCollectionEnvironmentCrud.get_or_create(
+        field_collection_environment=schemas.FieldCollectionEnvironmentCreate(
+            value_data=environment_data.value_data,
+            environment_definition_id=db_environment_definition.id,
+            field_collection_id=db_field_collection.id,
+            unit_id=db_unit.id
+        )
+    )
+    print("Result:::", db_field_collection_environment,
+          type(db_field_collection_environment))
+    return db_field_collection_environment

@@ -12,7 +12,6 @@ from app.routes import (
     fieldCollectionEnvironmentRoute,
     environmentDefinitionRoute,
     traitRoute,
-    environmentRoute,
 )
 from app.dependencies import get_db
 
@@ -43,11 +42,10 @@ app = FastAPI()
 
 sleep_time = 10
 
-app.include_router(fieldCollectionRoute.router)
-app.include_router(fieldCollectionEnvironmentRoute.router)
 app.include_router(environmentDefinitionRoute.router)
+app.include_router(fieldCollectionEnvironmentRoute.router)
+app.include_router(fieldCollectionRoute.router)
 app.include_router(traitRoute.router)
-app.include_router(environmentRoute.router)
 
 
 @app.post(

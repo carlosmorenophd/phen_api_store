@@ -2,7 +2,7 @@ from app import models
 from app.schemas import schemas
 
 
-def get_or_create(web_file: schemas.WebFileCreate):
+def get_or_create(web_file: schemas.WebFileCreate) -> models.WebFile:
     db_entity = models.WebFile.select().where(
         models.WebFile.name == web_file.name
     ).first()

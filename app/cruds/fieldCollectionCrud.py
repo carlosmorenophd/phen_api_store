@@ -39,8 +39,9 @@ def get_or_create_object(field_collection: models.FieldCollection):
         models.FieldCollection.occurrence == field_collection.occurrence and
         models.FieldCollection.description == field_collection.description and
         models.FieldCollection.web_file == field_collection.web_file and
-        models.FieldCollection.agricultural_cycle == field_collection.agricultural_cycle
-    )
+        models.FieldCollection.agricultural_cycle ==
+        field_collection.agricultural_cycle
+    ).first()
     if db_entity:
         return db_entity
     field_collection.save()
