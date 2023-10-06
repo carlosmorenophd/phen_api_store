@@ -1,4 +1,5 @@
-from app import models, schemas
+from app import models
+from app.schemas import schemas
 
 
 def find_by_id(id: int):
@@ -6,6 +7,13 @@ def find_by_id(id: int):
         return models.Location.get_by_id(id)
     except Exception:
         raise ValueError("Location can not found")
+
+
+def find_by_country_number(number: int, country: str):
+    return models.Location.select().where(
+        (models.Location.number == number) &
+        (models.Location.country == country)
+    ).first()
 
 
 def create(location: schemas.Location):

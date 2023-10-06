@@ -1,4 +1,5 @@
-from app import models, schemas
+from app import models
+from app.schemas import schemas
 
 
 def create(field_collection: schemas.FieldCollectionCreate):
@@ -7,15 +8,15 @@ def create(field_collection: schemas.FieldCollectionCreate):
         models.FieldCollection.trail.id == field_collection.trail_id and
         models.FieldCollection.occurrence == field_collection.occurrence and
         models.FieldCollection.cycle_year == field_collection.cycle_year
-    ) | (models.FieldCollection >> None)
+    )
     if db_entity:
         return db_entity
     db_location = models.Location.get_by_id(
-        id=field_collection.location_id) | (models.Location >> None)
+        id=field_collection.location_id)
     if not db_location:
         raise ValueError("Location is not valid")
     db_trail = models.Trail.get_by_id(
-        id=field_collection.trail_id) | (models.Trail >> None)
+        id=field_collection.trail_id)
     if not db_trail:
         raise ValueError("Trail is not valid")
     db_entity = models.FieldCollection(

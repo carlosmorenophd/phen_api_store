@@ -1,11 +1,11 @@
 import os
-from app import schemas
+from app.schemas import customs
 from csv import writer
 from app.cruds import rawCrud
-from app.services.MeanRawCountryInstitute import MeanRawCountryInstitute
+from app.services.MeanRawCountryInstituteService import MeanRawCountryInstitute
 
 
-def get_raw_join_all(raw_filter: schemas.RawAllFilter) -> str:
+def get_raw_join_all(raw_filter: customs.RawAllFilter) -> str:
     """ To delete
     Args:
         raw_filter (schemas.RawAllFilter): _description_
@@ -42,7 +42,7 @@ def get_raw_join_all(raw_filter: schemas.RawAllFilter) -> str:
     return "OK"
 
 
-def get_raw_join_all_trait(raw_filter: schemas.RawAllFilter) -> str:
+def get_raw_join_all_trait(raw_filter: customs.RawAllFilter) -> str:
     print(raw_filter)
     name_csv = "text.csv"
     if 1 in raw_filter.trait_ids:

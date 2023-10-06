@@ -1,4 +1,5 @@
-from app import models, schemas
+from app import models
+from app.schemas import schemas, customs
 
 
 def create_web_file(web_file: schemas.WebFile):
@@ -7,15 +8,6 @@ def create_web_file(web_file: schemas.WebFile):
     if db_find:
         return db_find
     db_entity = models.WebFile(name=web_file.name)
-    db_entity.save()
-    return db_entity
-
-
-def create_trail(trail: schemas.Trail):
-    db_entity = models.Trail.filter(models.Trail.name == trail.name).first()
-    if db_entity:
-        return db_entity
-    db_entity = models.Trail(name=trail.name)
     db_entity.save()
     return db_entity
 
@@ -218,7 +210,7 @@ def find_genotype_by_ids(c_id: int, s_id: int):
     return genotype.first()
 
 
-def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
+def search_raw_collection(id: int, raw_collection: customs.RawCollectionFilter):
     query = models.RawCollection.select()
     if raw_collection.occurrence != 0:
         query = query.where(
@@ -264,8 +256,8 @@ def search_raw_collection(id: int, raw_collection: schemas.RawCollectionFilter):
 
 
 def special_query_ids(
-    target: schemas.EntityTarget
-) -> list[schemas.ResponseTarget]:
+    target: customs.EntityTarget
+) -> list[customs.ResponseTarget]:
     if target == schemas.EntityTarget.genotype:
         return list(
             map(

@@ -51,13 +51,13 @@ class Location(Model):
     country = CharField()
     institute_name = CharField()
     cooperator = CharField()
-    latitude = CharField()
-    latitude_degrees = IntegerField()
-    latitude_minutes = IntegerField()
-    longitude = CharField()
-    longitude_degrees = IntegerField()
-    longitude_minutes = IntegerField()
-    altitude = IntegerField()
+    latitude = CharField(null=True)
+    latitude_degrees = IntegerField(null=True)
+    latitude_minutes = IntegerField(null=True)
+    longitude = CharField(null=True)
+    longitude_degrees = IntegerField(null=True)
+    longitude_minutes = IntegerField(null=True)
+    altitude = IntegerField(null=True)
 
     class Meta:
         database = db
@@ -122,7 +122,7 @@ class VariableOntology(Model):
 
 class FieldCollection(Model):
     occurrence = IntegerField()
-    cycle_year = CharField(max_length=4)
+    agricultural_cycle = CharField(max_length=4)
     location = ForeignKeyField(Location, backref="field_collections")
     trail = ForeignKeyField(Trail, backref="field_collections")
     description = TextField()
@@ -132,8 +132,8 @@ class FieldCollection(Model):
 
 
 class EnvironmentDefinition(Model):
-    trait_no = IntegerField()
-    trait_name = CharField(max_length=300)
+    number = IntegerField()
+    name = CharField(max_length=300)
 
     class Meta:
         database = db

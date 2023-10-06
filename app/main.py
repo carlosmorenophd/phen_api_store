@@ -1,7 +1,10 @@
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi_pagination import Page, add_pagination, paginate
-from app import database, models, schemas
+
+from app import database
+from app import models
+from app.schemas import schemas, customs
 from app.cruds import crud, locationCrud, genotypeCrud
 from app.services import rawService
 from app.routes import (
@@ -9,6 +12,7 @@ from app.routes import (
     fieldCollectionEnvironmentRoute,
     environmentDefinitionRoute,
     traitRoute,
+    environmentRoute,
 )
 from app.dependencies import get_db
 
@@ -43,6 +47,7 @@ app.include_router(fieldCollectionRoute.router)
 app.include_router(fieldCollectionEnvironmentRoute.router)
 app.include_router(environmentDefinitionRoute.router)
 app.include_router(traitRoute.router)
+app.include_router(environmentRoute.router)
 
 
 @app.post(
@@ -200,7 +205,7 @@ def find_genotype_by_ids(c_id: int, s_id: int):
     tags=["Raw Collection"],
     description="Search by any attribute",
 )
-def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
+def search_raw_collections(raw_collection: customs.RawCollectionFilter):
     return paginate(crud.search_raw_collection(
         id=id,
         raw_collection=raw_collection
@@ -209,12 +214,12 @@ def search_raw_collections(raw_collection: schemas.RawCollectionFilter):
 
 @app.get(
     "/special_query/ids/{target}",
-    response_model=list[schemas.ResponseTarget],
+    response_model=list[customs.ResponseTarget],
     dependencies=[Depends(get_db)],
     tags=["special_query"],
     description="Get all id on database",
 )
-def search_raw_collections_query(target: schemas.EntityTarget):
+def search_raw_collections_query(target: customs.EntityTarget):
     return crud.special_query_ids(target=target)
 
 
@@ -255,7 +260,7 @@ def find_genotype_by_id(id: int):
     tags=["Raw"],
     deprecated="23-10-02- To delete use /raw_all/trait"
 )
-def get_raw_by_genotype_id(raw_filter: schemas.RawAllFilter):
+def get_raw_by_genotype_id(raw_filter: customs.RawAllFilter):
     return rawService.get_raw_join_all(raw_filter=raw_filter)
 
 
@@ -265,7 +270,7 @@ def get_raw_by_genotype_id(raw_filter: schemas.RawAllFilter):
     dependencies=[Depends(get_db)],
     tags=["Raw"]
 )
-def get_raw_by_genotype_id_all_trait(raw_filter: schemas.RawAllFilter):
+def get_raw_by_genotype_id_all_trait(raw_filter: customs.RawAllFilter):
     return rawService.get_raw_join_all_trait(raw_filter=raw_filter)
 
 

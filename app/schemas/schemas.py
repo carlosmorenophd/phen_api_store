@@ -1,8 +1,6 @@
 from typing import Any
-from enum import Enum
-
 from peewee import ModelSelect
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from pydantic.utils import GetterDict
 
 
@@ -233,7 +231,7 @@ class VariableOntology(VariableOntologyBase):
 
 class FieldCollectionBase(BaseModel):
     occurrence: int
-    cycle_year: str
+    agricultural_cycle: str
     gen_number: int
 
 
@@ -254,8 +252,8 @@ class FieldCollection(FieldCollectionBase):
 
 
 class EnvironmentDefinitionBase(BaseModel):
-    trait_no: int
-    trait_name: str
+    number: int
+    name: str
 
 
 class EnvironmentDefinitionCreate(EnvironmentDefinitionBase):
@@ -294,8 +292,6 @@ class FieldCollectionEnvironment(FieldCollectionEnvironmentBase):
 class RawCollectionBase(BaseModel):
     hash_raw: str
     gen_number: int
-    cycle: str
-    gen_number: int
     repetition: int
     sub_block: int
     plot: int
@@ -319,37 +315,3 @@ class RawCollection(RawCollectionBase):
     class Config:
         orm_mode = True
         getter_dict = PeeweeGetterDict
-
-
-class RawCollectionFilter(BaseModel):
-    occurrence: int = Field(default=0)
-    cycle: str = Field(default="")
-    gen_number: int = Field(default=0)
-    repetition: int = Field(default=0)
-    sub_block: int = Field(default=0)
-    plot: int = Field(default=0)
-    value_data: str = Field(default="")
-    trail_id: int = Field(default=0)
-    trait_id: int = Field(default=0)
-    genotype_id: int = Field(default=0)
-    location_id: int = Field(default=0)
-    unit_id: int = Field(default=0)
-
-
-class EntityTarget(str, Enum):
-    genotype = "genotype"
-    trait = "trait"
-    repetition = "repetition"
-    location = "location"
-    cycle = "cycle"
-
-
-class ResponseTarget (BaseModel):
-    id: int
-    name: str
-
-
-class RawAllFilter(BaseModel):
-    ids: list[int]
-    is_details: bool = False
-    trait_ids: list[int]

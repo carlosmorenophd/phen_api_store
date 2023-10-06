@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app import schemas
+from app.schemas import schemas
 from app.cruds import fieldCollectionCrud
 from app.dependencies import get_db
 

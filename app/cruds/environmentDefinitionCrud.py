@@ -1,4 +1,5 @@
-from app import models, schemas
+from app import models
+from app.schemas import schemas
 
 
 def create(
@@ -9,7 +10,7 @@ def create(
         environment_definition.trait_no and
         models.EnvironmentDefinition.trait_name ==
         environment_definition.trait_name
-    ) | (models.EnvironmentDefinition >> None)
+    )
     if db_entity:
         return db_entity
     db_entity = models.EnvironmentDefinition(
