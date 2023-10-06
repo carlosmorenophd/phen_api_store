@@ -12,15 +12,6 @@ def create_web_file(web_file: schemas.WebFile):
     return db_entity
 
 
-def create_unit(unit: schemas.Unit):
-    db_entity = models.Unit.filter(models.Unit.name == unit.name).first()
-    if db_entity:
-        return db_entity
-    db_entity = models.Unit(name=unit.name)
-    db_entity.save()
-    return db_entity
-
-
 def create_genotype(genotype: schemas.Genotype):
     db_entity = models.Genotype.filter(
         models.Genotype.c_id == genotype.c_id).filter(models.Genotype.s_id == genotype.s_id)

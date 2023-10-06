@@ -13,6 +13,7 @@ class EnvironmentData(BaseModel):
     agricultural_cycle: str
     value_data: str
     unit_name: str
+    web_file_name: str
 
 
 class RawCollectionFilter(BaseModel):

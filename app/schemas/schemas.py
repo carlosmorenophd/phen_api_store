@@ -232,7 +232,7 @@ class VariableOntology(VariableOntologyBase):
 class FieldCollectionBase(BaseModel):
     occurrence: int
     agricultural_cycle: str
-    gen_number: int
+    description: str
 
 
 class FieldCollectionCreate(FieldCollectionBase):
