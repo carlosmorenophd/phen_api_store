@@ -5,7 +5,7 @@ from fastapi_pagination import Page, add_pagination, paginate
 from app import database
 from app import models
 from app.schemas import schemas, customs
-from app.cruds import crud, locationCrud, genotypeCrud
+from app.cruds import crud, locationCrud, genotypeCrud, unitCrud
 from app.services import rawService
 from app.routes import (
     fieldCollectionRoute,
@@ -76,7 +76,7 @@ def create_trail(trail: schemas.TrailCreate):
     dependencies=[Depends(get_db)]
 )
 def create_unit(unit: schemas.UnitCreate):
-    return crud.create_unit(unit=unit)
+    return unitCrud.get_or_create(unit=unit)
 
 
 @app.post(

@@ -4,7 +4,7 @@ from app.database import db
 
 
 class WebFile(Model):
-    name = CharField()
+    name = CharField(max_length=200)
 
     class Meta:
         database = db
@@ -121,11 +121,12 @@ class VariableOntology(Model):
 
 
 class FieldCollection(Model):
-    occurrence = IntegerField()
     agricultural_cycle = CharField(max_length=4)
+    occurrence = IntegerField()
+    description = TextField()
     location = ForeignKeyField(Location, backref="field_collections")
     trail = ForeignKeyField(Trail, backref="field_collections")
-    description = TextField()
+    web_file = ForeignKeyField(WebFile, backref="filed_collections")
 
     class Meta:
         database = db

@@ -238,13 +238,14 @@ class FieldCollectionBase(BaseModel):
 class FieldCollectionCreate(FieldCollectionBase):
     trail_id: int
     location_id: int
-    unit_id: int
+    web_file_id: int
 
 
 class FieldCollection(FieldCollectionBase):
     id: int
     trail: Trail
     location: Location
+    web_file: WebFile
 
     class Config:
         orm_mode = True

@@ -17,12 +17,15 @@ router = APIRouter(
     description="Save and storage all data",
 )
 def create(environment_data: customs.EnvironmentData):
-    try:
-        return environmentDataService.save_environment_data(
-            environment_data=environment_data
-        )
-    except ValueError as err:
-        raise HTTPException(
-            status_code=507,
-            detail="Error -> {}".format(err)
-        ) from err
+    return environmentDataService.save_environment_data(
+        environment_data=environment_data
+    )
+    # try:
+    #     return environmentDataService.save_environment_data(
+    #         environment_data=environment_data
+    #     )
+    # except ValueError as err:
+    #     raise HTTPException(
+    #         status_code=507,
+    #         detail="Error -> {}".format(err)
+    #     ) from err

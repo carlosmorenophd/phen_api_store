@@ -38,6 +38,11 @@ def save_environment_data(environment_data: customs.EnvironmentData) -> str:
             name=environment_data.unit_name,
         )
     )
+    db_web_file = webFileCrud.get_or_create(
+        web_file=schemas.WebFileCreate(
+            name=environment_data.web_file_name
+        )
+    )
     db_field_collection = fieldCollectionCrud.get_or_create(
         field_collection=schemas.FieldCollectionCreate(
             agricultural_cycle=environment_data.agricultural_cycle,
@@ -45,11 +50,8 @@ def save_environment_data(environment_data: customs.EnvironmentData) -> str:
             location_id=db_location.id,
             occurrence=environment_data.occurrence,
             trail_id=db_trail.id,
+            web_file_id=db_web_file.id,
         )
-    )
-    db_web_file = webFileCrud.get_or_create(
-        name=environment_data.web_file_name
-
     )
 
     return "OK"
