@@ -1,16 +1,17 @@
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
-from fastapi_pagination import Page, add_pagination, paginate
+from fastapi_pagination import add_pagination
 
 from app import database
 from app import models
-from app.schemas import schemas, customs
-from app.cruds import crud, locationCrud, genotypeCrud, unitCrud, webFileCrud
-from app.services import rawService
+from app.schemas import schemas
+from app.cruds import crud, genotypeCrud, unitCrud, webFileCrud
 from app.routes import (
-    fieldCollectionRoute,
-    fieldCollectionEnvironmentRoute,
     environmentDefinitionRoute,
+    fieldCollectionEnvironmentRoute,
+    fieldCollectionRoute,
+    locationRoute,
+    rawRoute,
     traitRoute,
 )
 from app.dependencies import get_db
@@ -19,21 +20,21 @@ from app.dependencies import get_db
 database.db.connect()
 database.db.create_tables(
     [
-        models.WebFile,
-        models.Trail,
-        models.Unit,
-        models.Trait,
+        models.CropOntology,
+        models.EnvironmentDefinition,
+        models.FieldCollection,
+        models.FieldCollectionEnvironment,
         models.Genotype,
         models.Location,
-        models.CropOntology,
-        models.TraitOntology,
         models.MethodOntology,
-        models.ScaleOntology,
-        models.VariableOntology,
-        models.FieldCollection,
-        models.EnvironmentDefinition,
-        models.FieldCollectionEnvironment,
         models.RawCollection,
+        models.ScaleOntology,
+        models.Trail,
+        models.Trait,
+        models.TraitOntology,
+        models.Unit,
+        models.VariableOntology,
+        models.WebFile,
     ]
 )
 database.db.close()
@@ -45,6 +46,8 @@ sleep_time = 10
 app.include_router(environmentDefinitionRoute.router)
 app.include_router(fieldCollectionEnvironmentRoute.router)
 app.include_router(fieldCollectionRoute.router)
+app.include_router(locationRoute.router)
+app.include_router(rawRoute.router)
 app.include_router(traitRoute.router)
 
 
@@ -75,26 +78,6 @@ def create_trail(trail: schemas.TrailCreate):
 )
 def create_unit(unit: schemas.UnitCreate):
     return unitCrud.get_or_create(unit=unit)
-
-
-@app.post(
-    "/genotypes/", response_model=schemas.Genotype,
-    dependencies=[Depends(get_db)],
-    tags=["Genotype"],
-)
-def create_genotype(genotype: schemas.GenotypeCreate):
-    return crud.create_genotype(genotype=genotype)
-
-
-@app.post(
-    "/locations/",
-    response_model=schemas.Location,
-    dependencies=[Depends(get_db)],
-    tags=["Location"],
-    description="Create a new Location"
-)
-def create_location(location: schemas.LocationCreate):
-    return locationCrud.create_location(location=location)
 
 
 @app.post(
@@ -149,16 +132,6 @@ def create_variable_ontology(
     return crud.create_variable_ontology(variable_ontology=variable_ontology)
 
 
-@app.post(
-    "/raw_collections/",
-    response_model=schemas.RawCollection,
-    dependencies=[Depends(get_db)],
-    tags=["Raw Collection"],
-)
-def create_raw_collection(raw_collection: schemas.RawCollectionCreate):
-    return crud.create_raw_collection(raw_collection=raw_collection)
-
-
 @app.get(
     "/trails/",
     response_model=List[schemas.Trail],
@@ -168,108 +141,6 @@ def create_raw_collection(raw_collection: schemas.RawCollectionCreate):
 )
 def search_trial_by_name(name: str):
     return crud.search_trail_by_name(name=name)
-
-
-# Fix to find and adding try
-@app.get(
-    "/locations/",
-    response_model=schemas.Location,
-    dependencies=[Depends(get_db)],
-    tags=["Location"],
-    description="Find location by number"
-)
-def search_location_by_number(number: int):
-    return crud.search_location_by_number(number=number)
-
-
-@app.get(
-    "/genotypes/",
-    response_model=schemas.Genotype,
-    dependencies=[Depends(get_db)],
-    tags=["Genotype"],
-)
-def find_genotype_by_ids(c_id: int, s_id: int):
-    try:
-        return crud.find_genotype_by_ids(c_id=c_id, s_id=s_id)
-    except ValueError as err:
-        raise HTTPException(
-            status_code=404, detail="Genotype not found") from err
-
-
-@app.post(
-    "/raw_collections/search/",
-    response_model=Page[schemas.RawCollection],
-    dependencies=[Depends(get_db)],
-    tags=["Raw Collection"],
-    description="Search by any attribute",
-)
-def search_raw_collections(raw_collection: customs.RawCollectionFilter):
-    return paginate(crud.search_raw_collection(
-        id=id,
-        raw_collection=raw_collection
-    ))
-
-
-@app.get(
-    "/special_query/ids/{target}",
-    response_model=list[customs.ResponseTarget],
-    dependencies=[Depends(get_db)],
-    tags=["special_query"],
-    description="Get all id on database",
-)
-def search_raw_collections_query(target: customs.EntityTarget):
-    return crud.special_query_ids(target=target)
-
-
-@app.get(
-    "/locations/{id}",
-    response_model=schemas.Location,
-    dependencies=[Depends(get_db)],
-    tags=["Location"],
-    description="Get location by id",
-)
-def find_location_by_id(id: int):
-    try:
-        return locationCrud.find_by_id(id=id)
-    except ValueError as err:
-        raise HTTPException(
-            status_code=404, detail="Location not found") from err
-
-
-@app.get(
-    "/genotypes/{id}",
-    response_model=schemas.Genotype,
-    dependencies=[Depends(get_db)],
-    tags=["Genotype"],
-    description="find Genotype by id",
-)
-def find_genotype_by_id(id: int):
-    try:
-        return genotypeCrud.find_by_id(id=id)
-    except ValueError as err:
-        raise HTTPException(
-            status_code=404, detail="Genotype not found") from err
-
-
-@app.post(
-    "/raw_all/search",
-    response_model=str,
-    dependencies=[Depends(get_db)],
-    tags=["Raw"],
-    deprecated="23-10-02- To delete use /raw_all/trait"
-)
-def get_raw_by_genotype_id(raw_filter: customs.RawAllFilter):
-    return rawService.get_raw_join_all(raw_filter=raw_filter)
-
-
-@app.post(
-    "/raw_all/trait",
-    response_model=str,
-    dependencies=[Depends(get_db)],
-    tags=["Raw"]
-)
-def get_raw_by_genotype_id_all_trait(raw_filter: customs.RawAllFilter):
-    return rawService.get_raw_join_all_trait(raw_filter=raw_filter)
 
 
 add_pagination(app)
