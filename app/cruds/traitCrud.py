@@ -2,9 +2,11 @@ from app import models
 from app.schemas import schemas
 
 
-def create(trait: schemas.Trait):
+def get_or_create(trait: schemas.Trait):
     db_entity = models.Trait.filter(
-        models.Trait.name == trait.name).filter(models.Trait.number == trait.number).first()
+        models.Trait.name == trait.name &
+        models.Trait.number == trait.number
+    ).first()
     if db_entity:
         return db_entity
     db_entity = models.Trait(
@@ -46,6 +48,15 @@ def find_by_number(number: int):
 
 def find_by_name(name: str):
     trait = models.Trait.filter(models.Trait.name == name).first()
+    if not trait:
+        raise ValueError("The trait does not exist")
+    return trait
+
+
+def find_by_name_number(name: str, number: int):
+    trait = models.Trait.filter(
+        models.Trait.name == name &
+        models.Trait.number == number).first()
     if not trait:
         raise ValueError("The trait does not exist")
     return trait

@@ -1,11 +1,10 @@
-from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi_pagination import add_pagination
 
 from app import database
 from app import models
 from app.schemas import schemas
-from app.cruds import crud, genotypeCrud, unitCrud, webFileCrud
+from app.cruds import crud, webFileCrud
 from app.routes import (
     environmentDefinitionRoute,
     fieldCollectionEnvironmentRoute,
@@ -13,6 +12,9 @@ from app.routes import (
     locationRoute,
     rawRoute,
     traitRoute,
+    genotypeRoute,
+    trailRoute,
+    unitRoute,
 )
 from app.dependencies import get_db
 
@@ -46,10 +48,12 @@ sleep_time = 10
 app.include_router(environmentDefinitionRoute.router)
 app.include_router(fieldCollectionEnvironmentRoute.router)
 app.include_router(fieldCollectionRoute.router)
+app.include_router(genotypeRoute.router)
 app.include_router(locationRoute.router)
 app.include_router(rawRoute.router)
+app.include_router(trailRoute.router)
 app.include_router(traitRoute.router)
-
+app.include_router(unitRoute.router)
 
 @app.post(
     "/web_files/",
@@ -58,26 +62,6 @@ app.include_router(traitRoute.router)
 )
 def create_web_file(web_file: schemas.WebFileCreate):
     return webFileCrud.get_or_create(web_file=web_file)
-
-
-@app.post(
-    "/trails/",
-    response_model=schemas.Trail,
-    dependencies=[Depends(get_db)],
-    tags=["Trail"],
-    description="Create a new Trail"
-)
-def create_trail(trail: schemas.TrailCreate):
-    return crud.create_trail(trail=trail)
-
-
-@app.post(
-    "/units/",
-    response_model=schemas.Unit,
-    dependencies=[Depends(get_db)]
-)
-def create_unit(unit: schemas.UnitCreate):
-    return unitCrud.get_or_create(unit=unit)
 
 
 @app.post(
@@ -130,17 +114,6 @@ def create_variable_ontology(
     variable_ontology: schemas.VariableOntologyCreate
 ):
     return crud.create_variable_ontology(variable_ontology=variable_ontology)
-
-
-@app.get(
-    "/trails/",
-    response_model=List[schemas.Trail],
-    dependencies=[Depends(get_db)],
-    tags=["Trail"],
-    description="Find Trail by name"
-)
-def search_trial_by_name(name: str):
-    return crud.search_trail_by_name(name=name)
 
 
 add_pagination(app)

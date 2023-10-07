@@ -48,3 +48,25 @@ class RawAllFilter(BaseModel):
     ids: list[int]
     is_details: bool = False
     trait_ids: list[int]
+
+
+class RawData(BaseModel):
+    trial_name: str
+    location_number: int
+    location_country: str
+    trait_number: int
+    trait_name: str
+    field_occurrence: int
+    field_description: str
+    field_agricultural_cycle: str
+    unit_name: str
+    web_file_name: str
+    genotype_c_id: int
+    genotype_s_id: int
+    genotype_name: str
+    genotype_number: int
+    repetition: int
+    sub_block: int
+    plot: int
+    value_data: str
+    hash_raw: str

@@ -5,7 +5,7 @@ from app.dependencies import get_db
 
 
 router = APIRouter(
-    prefix="/environment_definition",
+    prefix="/environment_definitions",
     tags=["Environment definition"],
     responses={404: {"description": "Environment definition not found"}}
 )

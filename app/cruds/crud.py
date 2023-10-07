@@ -114,10 +114,6 @@ def search_trail_by_name(name: str):
     return list(models.Trail.filter(models.Trail.name % name))
 
 
-def search_location_by_number(number: int):
-    return models.Location.filter(models.Location.number == number).first()
-
-
 # def find_trait_by_name(name: str):
 #     trait = models.Trait.filter(models.Trait.name == name).first()
 #     if not trait:

@@ -37,3 +37,7 @@ def create(location: schemas.Location):
     )
     db_entity.save()
     return db_entity
+
+
+def find_by_number(number: int):
+    return models.Location.filter(models.Location.number == number).first()

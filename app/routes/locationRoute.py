@@ -18,7 +18,7 @@ router = APIRouter(
     description="Create a new Location"
 )
 def create_location(location: schemas.LocationCreate):
-    return locationCrud.create_location(location=location)
+    return locationCrud.create(location=location)
 
 
 # TODO: adding try and catch
@@ -29,7 +29,7 @@ def create_location(location: schemas.LocationCreate):
     description="Find location by number"
 )
 def search_location_by_number(number: int):
-    return locationCrud.search_location_by_number(number=number)
+    return locationCrud.find_by_number(number=number)
 
 
 @router.get(
