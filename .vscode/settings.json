@@ -1,9 +1,13 @@
 {
     "cSpell.ignoreWords": [
         "backref",
+        "ciclo",
         "dotenv",
         "fastapi",
-        "pydantic"
+        "numero",
+        "occurencia",
+        "pydantic",
+        "tipo"
     ],
     "cSpell.words": [
         "uvicorn"

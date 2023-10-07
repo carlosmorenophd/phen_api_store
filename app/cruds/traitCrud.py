@@ -1,4 +1,5 @@
-from app import models, schemas
+from app import models
+from app.schemas import schemas
 
 
 def create(trait: schemas.Trait):
