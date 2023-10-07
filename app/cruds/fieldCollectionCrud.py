@@ -34,11 +34,11 @@ def get_or_create(
 
 def get_or_create_object(field_collection: models.FieldCollection):
     db_entity = models.FieldCollection.select().where(
-        models.FieldCollection.location == field_collection.location and
-        models.FieldCollection.trail == field_collection.trail and
-        models.FieldCollection.occurrence == field_collection.occurrence and
-        models.FieldCollection.description == field_collection.description and
-        models.FieldCollection.web_file == field_collection.web_file and
+        models.FieldCollection.location == field_collection.location &
+        models.FieldCollection.trail == field_collection.trail &
+        models.FieldCollection.occurrence == field_collection.occurrence &
+        models.FieldCollection.description == field_collection.description &
+        models.FieldCollection.web_file == field_collection.web_file &
         models.FieldCollection.agricultural_cycle ==
         field_collection.agricultural_cycle
     ).first()
@@ -46,3 +46,25 @@ def get_or_create_object(field_collection: models.FieldCollection):
         return db_entity
     field_collection.save()
     return field_collection
+
+
+def find_by_raw_data(
+    occurrence: int,
+    description: str,
+    agricultural_cycle: str,
+    web_file: models.WebFile,
+    trail: models.Trail,
+    location: models.Location,
+):
+    db_entity = models.FieldCollection.select().where(
+        models.FieldCollection.occurrence == occurrence &
+        models.FieldCollection.agricultural_cycle == agricultural_cycle &
+        models.FieldCollection.web_file == web_file &
+        models.FieldCollection.description == description &
+        models.FieldCollection.trail == trail &
+        models.FieldCollection.location == location
+    ).first()
+    if not db_entity:
+        raise ValueError("Can't found field collection {}, {}, {}".format(
+            occurrence, agricultural_cycle, web_file.id))
+    return db_entity

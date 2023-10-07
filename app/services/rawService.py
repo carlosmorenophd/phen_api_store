@@ -2,12 +2,14 @@ import os
 from app.schemas import customs, schemas
 from csv import writer
 from app.cruds import (
+    fieldCollectionCrud,
+    genotypeCrud,
     locationCrud,
     rawCrud,
     trailCrud,
+    traitCrud,
     unitCrud,
     webFileCrud,
-    traitCrud,
 )
 from app.services.MeanRawCountryInstituteService import MeanRawCountryInstitute
 
@@ -115,19 +117,10 @@ def write_on_csv(name_csv, list_element):
 
 
 def save_raw_data(raw_data: customs.RawData):
-    # : str
-    # location_number: int
-    # location_country: str
-    # trait_number: int
-    # trait_name: str
-    # field_occurrence: int
-    # field_description: str
-    # field_agricultural_cycle: str
-    # unit_name: str
-    # web_file_name: str
     # genotype_c_id: int
     # genotype_s_id: int
     # genotype_name: str
+
     # genotype_number: int
     # repetition: int
     # sub_block: int
@@ -160,68 +153,34 @@ def save_raw_data(raw_data: customs.RawData):
             name=raw_data.web_file_name
         )
     )
-
     db_trait = traitCrud.find_by_name_number(
         name=raw_data.trait_name,
         number=raw_data.trait_number
     )
-
-    # trail = dict()
-    # trail["name"] = raw_collection.pop("trails.name")
-    # response = requests.post(
-    #     url="{}/trails/".format(self.url_base),
-    #     headers={"Accept": "application/json"},
-    #     json=trail,
-    # )
-    # if not response.ok:
-    #     raise ConnectionError(response.text())
-    # raw_collection["trail_id"] = response.json()["id"]
-    # number = raw_collection.pop("locations.number")
-    # raw_collection.pop("locations.country")
-    # raw_collection.pop("locations.description")
-    # response = requests.get(
-    #     url="{}/locations/".format(self.url_base),
-    #     headers={"Accept": "application/json"},
-    #     params={"number": int(number)},
-    # )
-    # if not response.ok:
-    #     raise ConnectionError(response.text())
-    # raw_collection["location_id"] = response.json()["id"]
-    # ids = {
-    #     "c_id": raw_collection.pop("genotypes.c_id"),
-    #     "s_id": raw_collection.pop("genotypes.s_id"),
-    # }
-    # raw_collection.pop("genotypes.cross_name")
-    # response = requests.get(
-    #     url="{}/genotypes/".format(self.url_base),
-    #     headers={"Accept": "application/json"},
-    #     params=ids,
-    # )
-    # if not response.ok:
-    #     raise ConnectionError(response.text())
-    # raw_collection["genotype_id"] = response.json()["id"]
-    # trait = {
-    #     "name": raw_collection.pop("traits.name"),
-    #     "number": raw_collection.pop("traits.trait_number"),
-    #     "description": "",
-    #     "co_trait_name": "",
-    #     "variable_name": "",
-    #     "co_id": "",
-    # }
-    # response = requests.post(
-    #     url="{}/traits/".format(self.url_base),
-    #     headers={"Accept": "application/json"},
-    #     json=trait,
-    # )
-    # if not response.ok:
-    #     raise ConnectionError(response.text())
-    # raw_collection["trait_id"] = response.json()["id"]
-
-    # response = requests.post(
-    #     url="{}/units/".format(self.url_base),
-    #     headers={"Accept": "application/json"},
-    #     json={"name": raw_collection.pop("units.name")},
-    # )
-    # if not response.ok:
-    #     raise ConnectionError(response.text())
-    # raw_collection["unit_id"] = response.json()["id"]
+    db_field_collection = fieldCollectionCrud.find_by_raw_data(
+        occurrence=raw_data.field_occurrence,
+        description=raw_data.field_description,
+        agricultural_cycle=raw_data.field_agricultural_cycle,
+        web_file=db_web_file,
+        trail=db_trail,
+        location=db_location,
+    )
+    db_genotype = genotypeCrud.find_by_ids(
+        c_id=raw_data.genotype_c_id,
+        s_id=raw_data.genotype_c_id,
+    )
+    db_raw_collection = rawCrud.create(
+        raw_collection=schemas.RawCollectionCreate(
+            field_collection_id=db_field_collection.id,
+            gen_number=raw_data.genotype_number,
+            genotype_id=db_genotype.id,
+            hash_raw=raw_data.hash_raw,
+            plot=raw_data.plot,
+            repetition=raw_data.repetition,
+            sub_block=raw_data.sub_block,
+            trait_id=db_trait.id,
+            unit_id=db_unit.id,
+            value_data=raw_data.value_data,
+        )
+    )
+    return db_raw_collection
