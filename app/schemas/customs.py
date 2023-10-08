@@ -6,7 +6,7 @@ class EnvironmentData(BaseModel):
     trial_name: str
     location_number: int
     location_country: str
-    trait_number: int
+    trait_number: str
     trait_name: str
     occurrence: int
     description: str
@@ -24,7 +24,7 @@ class RawCollectionFilter(BaseModel):
     sub_block: int = Field(default=0)
     plot: int = Field(default=0)
     value_data: str = Field(default="")
-    trail_id: int = Field(default=0)
+    trial_id: int = Field(default=0)
     trait_id: int = Field(default=0)
     genotype_id: int = Field(default=0)
     location_id: int = Field(default=0)
@@ -54,7 +54,7 @@ class RawData(BaseModel):
     trial_name: str
     location_number: int
     location_country: str
-    trait_number: int
+    trait_number: str
     trait_name: str
     field_occurrence: int
     field_description: str

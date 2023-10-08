@@ -12,10 +12,11 @@ def find_by_id(id: int):
 def create(genotype: schemas.Genotype):
     db_entity = models.Genotype.filter(
         models.Genotype.c_id == genotype.c_id
-    ).filter(models.Genotype.s_id == genotype.s_id)
-    print(db_entity)
+    ).filter(
+        models.Genotype.s_id == genotype.s_id
+    ).first()
     if db_entity:
-        return db_entity.first()
+        return db_entity
     db_entity = models.Genotype(
         c_id=genotype.c_id,
         s_id=genotype.s_id,
@@ -29,8 +30,10 @@ def create(genotype: schemas.Genotype):
 def find_by_ids(c_id: int, s_id: int):
     genotype = models.Genotype.filter(
         models.Genotype.s_id == s_id
-    ).filter(models.Genotype.c_id == c_id)
-    print(genotype)
+    ).filter(
+        models.Genotype.c_id == c_id
+    ).first()
     if not genotype:
-        raise ValueError("The genotype does not exist")
-    return genotype.first()
+        raise ValueError(
+            "The genotype does not exist {}-{}".format(c_id, s_id))
+    return genotype

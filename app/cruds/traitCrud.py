@@ -4,7 +4,8 @@ from app.schemas import schemas
 
 def get_or_create(trait: schemas.Trait):
     db_entity = models.Trait.filter(
-        models.Trait.name == trait.name &
+        models.Trait.name == trait.name
+    ).filter(
         models.Trait.number == trait.number
     ).first()
     if db_entity:
@@ -39,7 +40,7 @@ def find_by_id(id: int):
         raise ValueError("Trait can not found")
 
 
-def find_by_number(number: int):
+def find_by_number(number: str):
     trait = models.Trait.filter(models.Trait.number == number).first()
     if not trait:
         raise ValueError("The trait does not exist")
@@ -53,7 +54,7 @@ def find_by_name(name: str):
     return trait
 
 
-def find_by_name_number(name: str, number: int):
+def find_by_name_number(name: str, number: str):
     trait = models.Trait.filter(
         models.Trait.name == name &
         models.Trait.number == number).first()

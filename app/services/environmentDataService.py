@@ -4,7 +4,7 @@ from app.cruds import (
     fieldCollectionCrud,
     fieldCollectionEnvironmentCrud,
     locationCrud,
-    trailCrud,
+    trialCrud,
     unitCrud,
     webFileCrud,
 )
@@ -19,13 +19,11 @@ def save_environment_data(environment_data: customs.EnvironmentData) -> str:
         raise ValueError("Can not find location : {}".format(
             environment_data.location_number
         ))
-    db_trail = trailCrud.find_by_name(
-        name=environment_data.trial_name,
+    db_trial = trialCrud.get_or_create(
+        trial=schemas.TrialCreate(
+            name=environment_data.trial_name,
+        )
     )
-    if not db_trail:
-        raise ValueError("Can not found trail {}".format(
-            environment_data.trial_name
-        ))
     db_environment_definition = environmentDefinitionCrud.get_or_create(
         environment_definition=schemas.EnvironmentDefinitionCreate(
             name=environment_data.trait_name,
@@ -48,7 +46,7 @@ def save_environment_data(environment_data: customs.EnvironmentData) -> str:
             description=environment_data.description,
             location_id=db_location.id,
             occurrence=environment_data.occurrence,
-            trail_id=db_trail.id,
+            trial_id=db_trial.id,
             web_file_id=db_web_file.id,
         )
     )
@@ -60,6 +58,4 @@ def save_environment_data(environment_data: customs.EnvironmentData) -> str:
             unit_id=db_unit.id
         )
     )
-    print("Result:::", db_field_collection_environment,
-          type(db_field_collection_environment))
     return db_field_collection_environment

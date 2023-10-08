@@ -6,8 +6,8 @@ from app.cruds import (
     genotypeCrud,
     locationCrud,
     rawCrud,
-    trailCrud,
     traitCrud,
+    trialCrud,
     unitCrud,
     webFileCrud,
 )
@@ -52,7 +52,6 @@ def get_raw_join_all(raw_filter: customs.RawAllFilter) -> str:
 
 
 def get_raw_join_all_trait(raw_filter: customs.RawAllFilter) -> str:
-    print(raw_filter)
     name_csv = "text.csv"
     if 1 in raw_filter.trait_ids:
         raise ValueError(
@@ -78,7 +77,6 @@ def get_raw_join_all_trait(raw_filter: customs.RawAllFilter) -> str:
         index_data=13
     )
     for id in raw_filter.ids:
-        # print("ID to work", id)
         cursor = rawCrud.get_raw_by_id_with_trait(id=id, trait_ids=trait_ids)
         for row in cursor.fetchall():
             mean.clean()
@@ -93,14 +91,12 @@ def get_raw_join_all_trait(raw_filter: customs.RawAllFilter) -> str:
                 "", "principal", *row, mean.get_mean(),
                 mean.get_tag(data_parent=float(row[13]))])
             if raw_filter.is_details:
-                # print("Adding child", cursor_same_genotype)
                 cursor_same_genotype = rawCrud.get_raw_by_cycle_genotype_id_with_trait(
                     trait_ids=trait_ids,
                     cycle=row[2],
                     genotype_id=int(row[7])
                 )
                 for row_child in cursor_same_genotype:
-                    # print("Child id", row_child[0])
                     type = "otro experimento"
                     if row_child[10] == "MEXICO" and row_child[12] == "CIMMYT":
                         type = "control"
@@ -117,16 +113,6 @@ def write_on_csv(name_csv, list_element):
 
 
 def save_raw_data(raw_data: customs.RawData):
-    # genotype_c_id: int
-    # genotype_s_id: int
-    # genotype_name: str
-
-    # genotype_number: int
-    # repetition: int
-    # sub_block: int
-    # plot: int
-    # value_data: str
-    # hash_raw: str
     db_location = locationCrud.find_by_country_number(
         country=raw_data.location_country,
         number=raw_data.location_number,
@@ -135,11 +121,11 @@ def save_raw_data(raw_data: customs.RawData):
         raise ValueError("Can not find location : {}".format(
             raw_data.location_number
         ))
-    db_trail = trailCrud.find_by_name(
+    db_trial = trialCrud.find_by_name(
         name=raw_data.trial_name,
     )
-    if not db_trail:
-        raise ValueError("Can not found trail {}".format(
+    if not db_trial:
+        raise ValueError("Can not found trial {}".format(
             raw_data.trial_name
         ))
 
@@ -153,21 +139,27 @@ def save_raw_data(raw_data: customs.RawData):
             name=raw_data.web_file_name
         )
     )
-    db_trait = traitCrud.find_by_name_number(
-        name=raw_data.trait_name,
-        number=raw_data.trait_number
+    db_trait = traitCrud.get_or_create(
+        trait=schemas.TraitCreate(
+            name=raw_data.trait_name,
+            number=raw_data.trait_number,
+            co_id="",
+            co_trait_name="",
+            description="",
+            variable_name="",
+        )
     )
     db_field_collection = fieldCollectionCrud.find_by_raw_data(
         occurrence=raw_data.field_occurrence,
         description=raw_data.field_description,
         agricultural_cycle=raw_data.field_agricultural_cycle,
         web_file=db_web_file,
-        trail=db_trail,
+        trial=db_trial,
         location=db_location,
     )
     db_genotype = genotypeCrud.find_by_ids(
         c_id=raw_data.genotype_c_id,
-        s_id=raw_data.genotype_c_id,
+        s_id=raw_data.genotype_s_id,
     )
     db_raw_collection = rawCrud.create(
         raw_collection=schemas.RawCollectionCreate(

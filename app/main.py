@@ -13,7 +13,7 @@ from app.routes import (
     rawRoute,
     traitRoute,
     genotypeRoute,
-    trailRoute,
+    trialRoute,
     unitRoute,
 )
 from app.dependencies import get_db
@@ -31,7 +31,7 @@ database.db.create_tables(
         models.MethodOntology,
         models.RawCollection,
         models.ScaleOntology,
-        models.Trail,
+        models.Trial,
         models.Trait,
         models.TraitOntology,
         models.Unit,
@@ -51,7 +51,7 @@ app.include_router(fieldCollectionRoute.router)
 app.include_router(genotypeRoute.router)
 app.include_router(locationRoute.router)
 app.include_router(rawRoute.router)
-app.include_router(trailRoute.router)
+app.include_router(trialRoute.router)
 app.include_router(traitRoute.router)
 app.include_router(unitRoute.router)
 

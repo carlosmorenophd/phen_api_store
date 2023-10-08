@@ -24,7 +24,7 @@ def create_raw_collection(raw_collection: schemas.RawCollectionCreate):
 
 @router.post(
     "/xls",
-    response_model=customs.RawData,
+    response_model=schemas.RawCollection,
     dependencies=[Depends(get_db)],
 )
 def create_raw_data(raw_data: customs.RawData):
