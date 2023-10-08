@@ -23,6 +23,15 @@ def create_raw_collection(raw_collection: schemas.RawCollectionCreate):
 
 
 @router.post(
+    "/xls",
+    response_model=schemas.RawCollection,
+    dependencies=[Depends(get_db)],
+)
+def create_raw_data(raw_data: customs.RawData):
+    return rawService.save_raw_data(raw_data=raw_data)
+
+
+@router.post(
     "/search/",
     response_model=Page[schemas.RawCollection],
     dependencies=[Depends(get_db)],

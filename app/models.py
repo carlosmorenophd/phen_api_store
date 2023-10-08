@@ -10,7 +10,7 @@ class WebFile(Model):
         database = db
 
 
-class Trail(Model):
+class Trial(Model):
     name = CharField(unique=True, index=True)
 
     class Meta:
@@ -27,10 +27,10 @@ class Unit(Model):
 class Trait(Model):
     name = CharField(unique=True, index=True)
     number = CharField()
-    description = TextField()
-    co_trait_name = CharField(index=True)
-    variable_name = CharField()
-    co_id = CharField()
+    description = TextField(null=True)
+    co_trait_name = CharField(null=True)
+    variable_name = CharField(null=True)
+    co_id = CharField(null=True)
 
     class Meta:
         database = db
@@ -125,7 +125,7 @@ class FieldCollection(Model):
     occurrence = IntegerField()
     description = TextField()
     location = ForeignKeyField(Location, backref="field_collections")
-    trail = ForeignKeyField(Trail, backref="field_collections")
+    trial = ForeignKeyField(Trial, backref="field_collections")
     web_file = ForeignKeyField(WebFile, backref="filed_collections")
 
     class Meta:

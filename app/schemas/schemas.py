@@ -28,15 +28,15 @@ class WebFile(WebFileBase):
         getter_dict = PeeweeGetterDict
 
 
-class TrailBase(BaseModel):
+class TrialBase(BaseModel):
     name: str
 
 
-class TrailCreate(TrailBase):
+class TrialCreate(TrialBase):
     pass
 
 
-class Trail(TrailBase):
+class Trial(TrialBase):
     id: int
 
     class Config:
@@ -235,14 +235,14 @@ class FieldCollectionBase(BaseModel):
 
 
 class FieldCollectionCreate(FieldCollectionBase):
-    trail_id: int
+    trial_id: int
     location_id: int
     web_file_id: int
 
 
 class FieldCollection(FieldCollectionBase):
     id: int
-    trail: Trail
+    trial: Trial
     location: Location
     web_file: WebFile
 

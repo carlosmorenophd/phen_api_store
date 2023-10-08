@@ -5,7 +5,7 @@ from app.dependencies import get_db
 
 
 router = APIRouter(
-    prefix="/genotype",
+    prefix="/genotypes",
     tags=["Genotype"],
     responses={404: {"description": "Genotype not found"}}
 )

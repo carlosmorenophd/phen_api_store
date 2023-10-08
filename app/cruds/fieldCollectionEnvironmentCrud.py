@@ -16,7 +16,6 @@ def get_or_create(
         field_collection_environment.value_data
     ).first()
     if db_entity:
-        print("Find")
         return db_entity
     db_field_collection = models.FieldCollection.get_by_id(
         field_collection_environment.field_collection_id

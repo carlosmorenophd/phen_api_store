@@ -94,11 +94,7 @@ def get_list_trait(trait_ids: list[int]):
     return result
 
 
-def create(raw_collection: schemas.RawCollection):
-    trail = models.Trail.filter(
-        models.Trail.id == raw_collection.trail_id).first()
-    if not trail:
-        raise ValueError("The Trail is not valid")
+def create(raw_collection: schemas.RawCollectionCreate):
     trait = models.Trait.filter(
         models.Trait.id == raw_collection.trait_id).first()
     if not trait:
@@ -108,32 +104,32 @@ def create(raw_collection: schemas.RawCollection):
     ).first()
     if not genotype:
         raise ValueError("The Genotype is not valid")
-    location = models.Location.filter(
-        models.Location.id == raw_collection.location_id
-    ).first()
-    if not location:
-        raise ValueError("The Location is not valid")
     unit = models.Unit.filter(models.Unit.id == raw_collection.unit_id).first()
     if not unit:
         raise ValueError("The Unit is not valid")
 
+    field_collection = models.FieldCollection.filter(
+        models.FieldCollection.id == raw_collection.field_collection_id
+    ).first()
+    if not field_collection:
+        raise ValueError(
+            "The field_collection is not valid id -> {}".format(
+                raw_collection.field_collection_id
+            ))
     db_entity = models.RawCollection.filter(
         models.RawCollection.hash_raw == raw_collection.hash_raw
     ).first()
     if db_entity:
         return db_entity
     db_entity = models.RawCollection(
-        occurrence=raw_collection.occurrence,
-        cycle=raw_collection.cycle,
+        field_collection=field_collection,
         gen_number=raw_collection.gen_number,
         repetition=raw_collection.repetition,
         sub_block=raw_collection.sub_block,
         plot=raw_collection.plot,
         value_data=raw_collection.value_data,
-        trail=trail,
         trait=trait,
         genotype=genotype,
-        location=location,
         unit=unit,
         hash_raw=raw_collection.hash_raw,
     )
@@ -162,9 +158,9 @@ def search(id: int, raw_collection: customs.RawCollectionFilter):
     if raw_collection.value_data != "":
         query = query.where(models.RawCollection.value_data ==
                             raw_collection.value_data)
-    if raw_collection.trail_id != 0:
-        query = query.where(models.RawCollection.trail_id ==
-                            raw_collection.trail_id)
+    if raw_collection.trial_id != 0:
+        query = query.where(models.RawCollection.trial_id ==
+                            raw_collection.trial_id)
     if raw_collection.trait_id != 0:
         query = query.where(models.RawCollection.trait_id ==
                             raw_collection.trait_id)

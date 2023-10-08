@@ -110,27 +110,5 @@ def create_variable_ontology(variable_ontology: schemas.VariableOntology):
     return db_entity
 
 
-def search_trail_by_name(name: str):
-    return list(models.Trail.filter(models.Trail.name % name))
-
-
-def search_location_by_number(number: int):
-    return models.Location.filter(models.Location.number == number).first()
-
-
-# def find_trait_by_name(name: str):
-#     trait = models.Trait.filter(models.Trait.name == name).first()
-#     if not trait:
-#         raise ValueError("The trait does not exist")
-#     return trait
-
-
-# def update_trait(id: int, trait: schemas.Trait):
-#     db_entity = models.Trait.filter(models.Trait.id == id).first()
-#     if not db_entity:
-#         raise ValueError("The trait does not exist")
-#     db_entity.co_trait_name = trait.co_trait_name
-#     db_entity.variable_name = trait.variable_name
-#     db_entity.co_id = trait.co_id
-#     db_entity.save()
-#     return db_entity
+def search_trial_by_name(name: str):
+    return list(models.Trial.filter(models.Trial.name % name))

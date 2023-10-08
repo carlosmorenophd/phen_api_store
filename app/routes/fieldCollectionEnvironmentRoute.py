@@ -6,7 +6,7 @@ from app.services import environmentDataService
 
 
 router = APIRouter(
-    prefix="/field_collection_environment",
+    prefix="/field_collection_environments",
     tags=["Field Collection Environments"],
     responses={404: {"description": "Field collection environment not found"}}
 )

@@ -18,7 +18,7 @@ router = APIRouter(
     description="Create a new Trait"
 )
 def create(trait: schemas.TraitCreate):
-    return traitCrud.create(trait=trait)
+    return traitCrud.get_or_create(trait=trait)
 
 
 @router.get(
