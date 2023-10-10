@@ -6,8 +6,8 @@ def get_or_create(
     environment_definition: schemas.EnvironmentDefinitionCreate
 ):
     db_entity = models.EnvironmentDefinition.select().where(
-        models.EnvironmentDefinition.name == environment_definition.name &
-        models.EnvironmentDefinition.number == environment_definition.number
+        models.EnvironmentDefinition.name == environment_definition.name,
+        models.EnvironmentDefinition.number == environment_definition.number,
     ).first()
     if db_entity:
         return db_entity

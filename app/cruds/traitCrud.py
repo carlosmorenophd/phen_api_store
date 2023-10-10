@@ -56,8 +56,9 @@ def find_by_name(name: str):
 
 def find_by_name_number(name: str, number: str):
     trait = models.Trait.filter(
-        models.Trait.name == name &
-        models.Trait.number == number).first()
+        models.Trait.name == name,
+        models.Trait.number == number,
+    ).first()
     if not trait:
         raise ValueError("The trait does not exist")
     return trait

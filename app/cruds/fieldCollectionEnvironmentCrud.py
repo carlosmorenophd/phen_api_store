@@ -5,15 +5,11 @@ from app.schemas import schemas
 def get_or_create(
     field_collection_environment: schemas.FieldCollectionEnvironmentCreate
 ):
-    db_entity = models.FieldCollectionEnvironment.select().where(
-        models.FieldCollectionEnvironment.field_collection.id ==
-        field_collection_environment.field_collection_id and
-        models.FieldCollectionEnvironment.environment_definition.id ==
-        field_collection_environment.environment_definition_id and
-        models.FieldCollectionEnvironment.unit.id ==
-        field_collection_environment.unit_id and
-        models.FieldCollectionEnvironment.value_data ==
-        field_collection_environment.value_data
+    db_entity = find_by_field(
+        environment_definition_id=field_collection_environment.environment_definition_id,
+        field_collection_id=field_collection_environment.field_collection_id,
+        unit_id=field_collection_environment.unit_id,
+        value_data=field_collection_environment.value_data,
     ).first()
     if db_entity:
         return db_entity
@@ -40,3 +36,27 @@ def get_or_create(
     )
     db_entity.save()
     return db_entity
+
+
+def find_by_field(
+    environment_definition_id: int,
+    field_collection_id: int,
+    unit_id: int,
+    value_data: int,
+):
+    return models.FieldCollectionEnvironment.select().join(
+        models.FieldCollection
+    ).switch(
+        models.FieldCollectionEnvironment
+    ).join(
+        models.EnvironmentDefinition
+    ).switch(
+        models.FieldCollectionEnvironment
+    ).join(
+        models.Unit
+    ).where(
+        models.FieldCollection.id == field_collection_id,
+        models.EnvironmentDefinition.id == environment_definition_id,
+        models.Unit.id == unit_id,
+        models.FieldCollectionEnvironment.value_data == value_data,
+    )

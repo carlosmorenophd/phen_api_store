@@ -11,8 +11,8 @@ def find_by_id(id: int):
 
 def find_by_country_number(number: int, country: str):
     return models.Location.select().where(
-        (models.Location.number == number) &
-        (models.Location.country == country)
+        models.Location.number == number,
+        models.Location.country == country,
     ).first()
 
 

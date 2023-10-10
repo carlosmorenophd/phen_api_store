@@ -149,7 +149,7 @@ def save_raw_data(raw_data: customs.RawData):
             variable_name="",
         )
     )
-    db_field_collection = fieldCollectionCrud.find_by_raw_data(
+    db_field_collection = fieldCollectionCrud.get_by_raw(
         occurrence=raw_data.field_occurrence,
         description=raw_data.field_description,
         agricultural_cycle=raw_data.field_agricultural_cycle,
