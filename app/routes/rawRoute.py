@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.schemas import schemas, customs
 from app.cruds import rawCrud
 from app.dependencies import get_db
 from fastapi_pagination import Page, paginate
-from app.services import rawService
+from app.services import rawService, environmentDataService
 
 
 router = APIRouter(
@@ -71,3 +71,21 @@ def get_raw_by_genotype_id(raw_filter: customs.RawAllFilter):
 )
 def get_raw_by_genotype_id_all_trait(raw_filter: customs.RawAllFilter):
     return rawService.get_raw_join_all_trait(raw_filter=raw_filter)
+
+
+@router.get(
+    "/field/search",
+    response_model=str,
+    dependencies=[Depends(get_db)],
+    description="Create a new field collection",
+)
+def search():
+    try:
+        rawService.search_field_data()
+        return "OK"
+    except ValueError as err:
+        raise HTTPException(
+            status_code=404,
+            detail= "Error -> {}".format(err)
+        )
+    

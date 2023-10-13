@@ -102,3 +102,30 @@ def find_by_raw(
         models.Trial.id == trial.id,
         models.Location.id == location.id,
     )
+
+
+def find_by_raw_optional(
+    occurrence: int = 0,
+    description: str = "",
+    agricultural_cycle: str = "",
+):
+    result = models.FieldCollection.select().join(
+        models.WebFile
+    ).switch(
+        models.FieldCollection
+    ).join(
+        models.Trial
+    ).switch(
+        models.FieldCollection
+    ).join(
+        models.Location
+    )
+    if occurrence != 0:
+        result = result.where(models.FieldCollection.occurrence == occurrence,
+                     )
+    if description != "":
+        result = result.where(models.FieldCollection.description == description,
+        )
+    if agricultural_cycle != "":
+        result = result.where(models.FieldCollection.description == description,)
+    return result

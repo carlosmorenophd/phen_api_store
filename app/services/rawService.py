@@ -176,3 +176,31 @@ def save_raw_data(raw_data: customs.RawData):
         )
     )
     return db_raw_collection
+
+
+def search_field_data():
+    name_csv = "test.csv"
+    if os.path.exists(name_csv):
+        os.remove(name_csv)
+    result = fieldCollectionCrud.find_by_raw_optional(occurrence=1)
+    head_row = []
+    data_sheet = {}
+    for field in result:
+        # print("Id => {}".format(field.id))
+        for raw in field.raw_collections:
+                if not str(raw.genotype.id) in data_sheet:
+                    data_sheet[str(raw.genotype.id)] = {}
+                data_sheet[str(raw.genotype.id)]["name"] = raw.genotype.cross_name
+                data_sheet[str(raw.genotype.id)]["c_id"] = raw.genotype.c_id
+                data_sheet[str(raw.genotype.id)]["s_id"] = raw.genotype.s_id
+        # for environmnet in field.field_environments:
+            # print(
+            #     "Id => {}, name -> {}, value -> {}, unit -> {}".format(
+            #         environmnet.id,
+            #         environmnet.environment_definition.name,
+            #         environmnet.value_data,
+            #         environmnet.unit.name
+            #     )
+            # )
+    for key in data_sheet:
+        print(data_sheet[key]["name"])
