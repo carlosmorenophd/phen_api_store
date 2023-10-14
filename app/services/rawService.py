@@ -200,16 +200,19 @@ def search_field_data():
                     data_sheet[genotype_key]["name"] = raw.genotype.cross_name
                     data_sheet[genotype_key]["c_id"] = raw.genotype.c_id
                     data_sheet[genotype_key]["s_id"] = raw.genotype.s_id
-                    for environment in field.field_environments: 
-                        environment_name = "{}:({})".format(environment.environment_definition.name, environment.unit.name)
-                        basic_column = adding_witour_retited(item=environment_name, list_array=basic_column)
-                        data_sheet[genotype_key][environment_name] = environment.value_data
+                    for environment in field.field_environments:
+                        environment_name = "{}:({})".format(
+                            environment.environment_definition.name, environment.unit.name)
+                        basic_column = adding_witour_retited(
+                            item=environment_name, list_array=basic_column)
+                        data_sheet[genotype_key][clean_name(
+                            environment_name)] = environment.value_data
                 unit = unitCrud.find_by_id(raw.unit.id)
-                name_trait = "{}:{}:({})".format(trait.name, raw.repetition, unit.name)
+                name_trait = "{}:{}:({})".format(
+                    trait.name, raw.repetition, unit.name)
                 adding_witour_retited(item=name_trait, list_array=trait_column)
-                data_sheet[genotype_key][name_trait] = raw.value_data
-    # for key in data_sheet:
-    #     print(data_sheet[key]["name"])
+                data_sheet[genotype_key][clean_name(
+                    name_trait)] = raw.value_data
     trait_column.sort()
     trait_with_out_repetition = {}
     for trait in trait_column:
@@ -217,24 +220,40 @@ def search_field_data():
         if not name in trait_with_out_repetition:
             trait_with_out_repetition[trait.split(":")[0]] = [trait]
         else:
-            trait_with_out_repetition[trait.split(":")[0]] = trait_with_out_repetition[trait.split(":")[0]] + [trait]
-    print(trait_with_out_repetition)
+            trait_with_out_repetition[trait.split(
+                ":")[0]] = trait_with_out_repetition[trait.split(":")[0]] + [trait]
     for key_sheet in data_sheet:
-        avg_sum = 0
-        avg_count = 0
         for key_trait in trait_with_out_repetition:
             name = "{}:avg".format(key_trait)
-            data_sheet[key_sheet][name] = ""
-            trait_column = adding_witour_retited(item=name, list_array=trait_column)
+            data_sheet[key_sheet][clean_name(name)] = ""
+            trait_column = adding_witour_retited(
+                item=name, list_array=trait_column)
+            avg_sum = 0
+            avg_count = 0
             for trait in trait_with_out_repetition[key_trait]:
-                if trait in data_sheet[key_sheet] and len(data_sheet[key_sheet][trait].strip()) != 0 and is_float(data_sheet[key_sheet][trait]):
-                    avg_sum = avg_sum + float(data_sheet[key_sheet][trait])
-                    avg_count = avg_count + 1
+                if clean_name(trait) in data_sheet[key_sheet]:
+                    print("Key ({}) - Try number to cast float = {} ->{}".format(clean_name(
+                            trait), data_sheet[key_sheet][clean_name(
+                                trait)], is_float(data_sheet[key_sheet][clean_name(trait)])))
+                    if is_float(data_sheet[key_sheet][clean_name(trait)]):
+                        print("True")
+                        avg_sum = avg_sum + \
+                            float(data_sheet[key_sheet][clean_name(trait)])
+                        avg_count = avg_count + 1
             if avg_sum != 0:
-                data_sheet[key_sheet]["{}:avg".format(key_trait)] = avg_sum / avg_count
+                print("avg -> {}".format(avg_sum / avg_count))
+                data_sheet[key_sheet][clean_name(name)] = avg_sum / avg_count
     trait_column.sort()
     head_column = basic_column + trait_column
     write_on_csv(name_csv=name_csv, list_element=head_column)
+    for key_sheet in data_sheet:
+        save = []
+        for head in head_column:
+            if clean_name(head) in data_sheet[key_sheet]:
+                save.append(data_sheet[key_sheet][clean_name(head)])
+            else:
+                save.append("")
+        write_on_csv(name_csv=name_csv, list_element=save)
     # TODO: Write csv file
     # TODO: Adding only trait that was valid
     # TODO: adding parameter to request
@@ -256,3 +275,11 @@ def is_float(num):
         return True
     except ValueError:
         return False
+
+
+def clean_name(name: str) -> str:
+    name = name.replace("(", ".")
+    name = name.replace(")", ".")
+    name = name.replace(":", "..")
+    name = name.replace("/", "")
+    return name
