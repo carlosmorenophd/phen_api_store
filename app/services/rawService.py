@@ -235,6 +235,9 @@ def search_field_data():
     trait_column.sort()
     head_column = basic_column + trait_column
     write_on_csv(name_csv=name_csv, list_element=head_column)
+    # TODO: Write csv file
+    # TODO: Adding only trait that was valid
+    # TODO: adding parameter to request
     #     for head in head_column:
     #         print(head)
 
