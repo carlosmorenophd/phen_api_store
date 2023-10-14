@@ -183,24 +183,73 @@ def search_field_data():
     if os.path.exists(name_csv):
         os.remove(name_csv)
     result = fieldCollectionCrud.find_by_raw_optional(occurrence=1)
-    head_row = []
+    trait_ids = [1, 2, 3, 4, 5, 6]
+    basic_column = ["name", "c_id", "s_id"]
+    trait_column = []
     data_sheet = {}
     for field in result:
         # print("Id => {}".format(field.id))
-        for raw in field.raw_collections:
-                if not str(raw.genotype.id) in data_sheet:
-                    data_sheet[str(raw.genotype.id)] = {}
-                data_sheet[str(raw.genotype.id)]["name"] = raw.genotype.cross_name
-                data_sheet[str(raw.genotype.id)]["c_id"] = raw.genotype.c_id
-                data_sheet[str(raw.genotype.id)]["s_id"] = raw.genotype.s_id
-        # for environmnet in field.field_environments:
-            # print(
-            #     "Id => {}, name -> {}, value -> {}, unit -> {}".format(
-            #         environmnet.id,
-            #         environmnet.environment_definition.name,
-            #         environmnet.value_data,
-            #         environmnet.unit.name
-            #     )
-            # )
-    for key in data_sheet:
-        print(data_sheet[key]["name"])
+        for id in trait_ids:
+            trait = traitCrud.find_by_id(id)
+            raws = filter(lambda raw: raw.trait.id ==
+                          id, field.raw_collections)
+            for raw in raws:
+                genotype_key = str(raw.genotype.id)
+                if not genotype_key in data_sheet:
+                    data_sheet[genotype_key] = {}
+                    data_sheet[genotype_key]["name"] = raw.genotype.cross_name
+                    data_sheet[genotype_key]["c_id"] = raw.genotype.c_id
+                    data_sheet[genotype_key]["s_id"] = raw.genotype.s_id
+                    for environment in field.field_environments: 
+                        environment_name = "{}:({})".format(environment.environment_definition.name, environment.unit.name)
+                        basic_column = adding_witour_retited(item=environment_name, list_array=basic_column)
+                        data_sheet[genotype_key][environment_name] = environment.value_data
+                unit = unitCrud.find_by_id(raw.unit.id)
+                name_trait = "{}:{}:({})".format(trait.name, raw.repetition, unit.name)
+                adding_witour_retited(item=name_trait, list_array=trait_column)
+                data_sheet[genotype_key][name_trait] = raw.value_data
+    # for key in data_sheet:
+    #     print(data_sheet[key]["name"])
+    trait_column.sort()
+    trait_with_out_repetition = {}
+    for trait in trait_column:
+        name = trait.split(":")[0]
+        if not name in trait_with_out_repetition:
+            trait_with_out_repetition[trait.split(":")[0]] = [trait]
+        else:
+            trait_with_out_repetition[trait.split(":")[0]] = trait_with_out_repetition[trait.split(":")[0]] + [trait]
+    print(trait_with_out_repetition)
+    for key_sheet in data_sheet:
+        avg_sum = 0
+        avg_count = 0
+        for key_trait in trait_with_out_repetition:
+            name = "{}:avg".format(key_trait)
+            data_sheet[key_sheet][name] = ""
+            trait_column = adding_witour_retited(item=name, list_array=trait_column)
+            for trait in trait_with_out_repetition[key_trait]:
+                if trait in data_sheet[key_sheet] and len(data_sheet[key_sheet][trait].strip()) != 0 and is_float(data_sheet[key_sheet][trait]):
+                    avg_sum = avg_sum + float(data_sheet[key_sheet][trait])
+                    avg_count = avg_count + 1
+            if avg_sum != 0:
+                data_sheet[key_sheet]["{}:avg".format(key_trait)] = avg_sum / avg_count
+    trait_column.sort()
+    head_column = basic_column + trait_column
+    write_on_csv(name_csv=name_csv, list_element=head_column)
+    #     for head in head_column:
+    #         print(head)
+
+
+def adding_witour_retited(item: str, list_array: list) -> list:
+    if len(list_array) == 0:
+        list_array.append(item)
+    if not item in list_array:
+        list_array.append(item)
+    return list_array
+
+
+def is_float(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
