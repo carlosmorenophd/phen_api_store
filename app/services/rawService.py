@@ -178,12 +178,11 @@ def save_raw_data(raw_data: customs.RawData):
     return db_raw_collection
 
 
-def search_field_data():
-    name_csv = "test.csv"
+def search_field_data(raw_collection_field: customs.RawCollectionFieldFilter, name_csv: str):
     if os.path.exists(name_csv):
         os.remove(name_csv)
     result = fieldCollectionCrud.find_by_raw_optional(occurrence=1)
-    trait_ids = [1, 2, 3, 4, 5, 6]
+    trait_ids = raw_collection_field.trait_ids
     basic_column = ["name", "c_id", "s_id"]
     trait_column = []
     data_sheet = {}
