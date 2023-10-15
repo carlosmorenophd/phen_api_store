@@ -79,7 +79,7 @@ def get_raw_by_genotype_id_all_trait(raw_filter: customs.RawAllFilter):
     dependencies=[Depends(get_db)],
     description="Create a new field collection",
 )
-def search(raw_collection_field: customs.RawCollectionFieldFilter):
+async def search(raw_collection_field: customs.RawCollectionFieldFilter):
     try:
         rawService.search_field_data(raw_collection_field=raw_collection_field, name_csv = "test.csv")
         return "OK"

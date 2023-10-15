@@ -108,8 +108,9 @@ def find_by_raw_optional(
     occurrence: int = 0,
     description: str = "",
     agricultural_cycle: str = "",
+    genotype_ids: list[int] = []
 ):
-    result = models.FieldCollection.select().join(
+    result = models.FieldCollection.select().distinct().join(
         models.WebFile
     ).switch(
         models.FieldCollection
@@ -119,6 +120,12 @@ def find_by_raw_optional(
         models.FieldCollection
     ).join(
         models.Location
+    ).switch(
+        models.FieldCollection
+    ).join(
+        models.RawCollection
+    ).join(
+        models.Genotype
     )
     if occurrence != 0:
         result = result.where(models.FieldCollection.occurrence == occurrence,
@@ -128,4 +135,7 @@ def find_by_raw_optional(
         )
     if agricultural_cycle != "":
         result = result.where(models.FieldCollection.description == description,)
+    if len(genotype_ids) != 0:
+        result = result.where(models.Genotype.id << genotype_ids,)
+
     return result
