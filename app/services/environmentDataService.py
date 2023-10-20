@@ -16,9 +16,21 @@ def save_environment_data(environment_data: customs.EnvironmentData) -> str:
         number=environment_data.location_number,
     )
     if not db_location:
-        raise ValueError("Can not find location : {}".format(
-            environment_data.location_number
-        ))
+        print("location {} {}".format(
+            environment_data.location_country, environment_data.location_number))
+        db_location = locationCrud.create(location=schemas.LocationCreate(
+            country=environment_data.location_country,
+            number=environment_data.location_number,
+            institute_name="",
+            cooperator="",
+            latitude="",
+            latitude_degrees=0,
+            latitude_minutes=0,
+            longitude="",
+            longitude_degrees=0,
+            longitude_minutes=0,
+            altitude=0,))
+        print("Query ".format(db_location))
     db_trial = trialCrud.get_or_create(
         trial=schemas.TrialCreate(
             name=environment_data.trial_name,

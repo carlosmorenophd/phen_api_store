@@ -13,3 +13,6 @@ def get_or_create(unit: schemas.Unit) -> models.Unit:
     )
     db_save.save()
     return db_save
+
+def find_by_id(id: int) -> models.Unit:
+    return models.Unit.get_by_id(id)

@@ -70,3 +70,7 @@ class RawData(BaseModel):
     plot: int
     value_data: str
     hash_raw: str
+
+class RawCollectionFieldFilter(BaseModel):
+    trait_ids: list[int] = Field(default=[])
+    genotype_ids: list[int] = Field(default=[])

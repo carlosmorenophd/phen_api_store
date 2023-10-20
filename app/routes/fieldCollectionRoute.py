@@ -25,3 +25,4 @@ def create(field_collection: schemas.FieldCollectionCreate):
             status_code=404,
             detail="Some attributes can't be founded"
         ) from err
+    
