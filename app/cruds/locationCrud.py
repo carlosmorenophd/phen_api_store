@@ -11,20 +11,23 @@ def find_by_id(id: int):
 
 def find_by_country_number(number: int, country: str):
     return models.Location.select().where(
-        models.Location.number == number,
-        models.Location.country == country,
+        models.Location.number == validate_country_number(
+            country=country, number=number),
+        models.Location.country == validate_country(country=country),
     ).first()
 
 
 def create(location: schemas.Location):
     db_entity = models.Location.filter(
-        models.Location.number == location.number
+        models.Location.number == validate_country_number(
+            country=location.country, number=location.number)
     ).first()
     if db_entity:
         return db_entity
     db_entity = models.Location(
-        number=location.number,
-        country=location.country,
+        number=validate_country_number(
+            country=location.country, number=location.number),
+        country=validate_country(country=location.country),
         institute_name=location.institute_name,
         cooperator=location.cooperator,
         latitude=location.latitude,
@@ -41,3 +44,22 @@ def create(location: schemas.Location):
 
 def find_by_number(number: int):
     return models.Location.filter(models.Location.number == number).first()
+
+
+def validate_country(country: str) -> str:
+    if rule_to_country(country=country):
+        return "None_country"
+    else:
+        return country
+
+
+def validate_country_number(country: str, number: int) -> str:
+    if rule_to_country(country=country):
+        return 2147483647
+    else:
+        return number
+
+def rule_to_country(country: str) -> bool:
+    if country == "" or country == "nan" or country == None or country=="Null":
+        return True
+    return False
