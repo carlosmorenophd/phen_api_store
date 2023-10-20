@@ -181,13 +181,18 @@ def save_raw_data(raw_data: customs.RawData):
 def search_field_data(raw_collection_field: customs.RawCollectionFieldFilter, name_csv: str):
     if os.path.exists(name_csv):
         os.remove(name_csv)
-    result = fieldCollectionCrud.find_by_raw_optional(occurrence=1)
+    result = fieldCollectionCrud.find_by_raw_optional(
+        genotype_ids=raw_collection_field.genotype_ids)
     trait_ids = raw_collection_field.trait_ids
-    basic_column = ["name", "c_id", "s_id"]
+    basic_column = ["name", "c_id", "s_id", "country",
+                    "institute_name"]
     trait_column = []
     data_sheet = {}
+    print("[1-3]-[0-{}]".format(len(result)))
+    i = 0
     for field in result:
-        # print("Id => {}".format(field.id))
+        print("[1-3]-[{}-{}]".format(i, len(result)))
+        i = i+1
         for id in trait_ids:
             trait = traitCrud.find_by_id(id)
             raws = filter(lambda raw: raw.trait.id ==
@@ -199,16 +204,19 @@ def search_field_data(raw_collection_field: customs.RawCollectionFieldFilter, na
                     data_sheet[genotype_key]["name"] = raw.genotype.cross_name
                     data_sheet[genotype_key]["c_id"] = raw.genotype.c_id
                     data_sheet[genotype_key]["s_id"] = raw.genotype.s_id
+                    data_sheet[genotype_key]["country"] = field.location.country
+                    data_sheet[genotype_key]["institute_name"] = field.location.institute_name
                     for environment in field.field_environments:
                         environment_name = "{}:({})".format(
                             environment.environment_definition.name, environment.unit.name)
-                        basic_column = adding_witour_retited(
+                        basic_column = adding_whit_out_retired(
                             item=environment_name, list_array=basic_column)
                         data_sheet[genotype_key][environment_name] = environment.value_data
                 unit = unitCrud.find_by_id(raw.unit.id)
                 name_trait = "{}:{}:({})".format(
                     trait.name, raw.repetition, unit.name)
-                adding_witour_retited(item=name_trait, list_array=trait_column)
+                adding_whit_out_retired(
+                    item=name_trait, list_array=trait_column)
                 data_sheet[genotype_key][name_trait] = raw.value_data
     trait_column.sort()
     trait_with_out_repetition = {}
@@ -219,11 +227,15 @@ def search_field_data(raw_collection_field: customs.RawCollectionFieldFilter, na
         else:
             trait_with_out_repetition[trait.split(
                 ":")[0]] = trait_with_out_repetition[trait.split(":")[0]] + [trait]
+    print("[2-1][0-{}]".format(len(data_sheet)))
+    i = 0
     for key_sheet in data_sheet:
+        print("[2-1][{}-{}]".format(i, len(data_sheet)))
+        i = i + 1
         for key_trait in trait_with_out_repetition:
             name = "{}:avg".format(key_trait)
             data_sheet[key_sheet][name] = ""
-            trait_column = adding_witour_retited(
+            trait_column = adding_whit_out_retired(
                 item=name, list_array=trait_column)
             avg_sum = 0
             avg_count = 0
@@ -238,7 +250,11 @@ def search_field_data(raw_collection_field: customs.RawCollectionFieldFilter, na
     trait_column.sort()
     head_column = basic_column + trait_column
     write_on_csv(name_csv=name_csv, list_element=head_column)
+    print("[2-1][0-{}]".format(len(data_sheet)))
+    i = 0
     for key_sheet in data_sheet:
+        print("[2-1][{}-{}]".format(i, len(data_sheet)))
+        i = i + 1
         save = []
         for head in head_column:
             if head in data_sheet[key_sheet]:
@@ -252,7 +268,7 @@ def search_field_data(raw_collection_field: customs.RawCollectionFieldFilter, na
     #         print(head)
 
 
-def adding_witour_retited(item: str, list_array: list) -> list:
+def adding_whit_out_retired(item: str, list_array: list) -> list:
     if len(list_array) == 0:
         list_array.append(item)
     if not item in list_array:
@@ -266,4 +282,3 @@ def is_float(num):
         return True
     except ValueError:
         return False
-

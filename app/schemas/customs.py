@@ -73,3 +73,4 @@ class RawData(BaseModel):
 
 class RawCollectionFieldFilter(BaseModel):
     trait_ids: list[int] = Field(default=[])
+    genotype_ids: list[int] = Field(default=[])
