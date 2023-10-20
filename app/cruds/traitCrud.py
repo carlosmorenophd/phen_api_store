@@ -5,8 +5,6 @@ from app.schemas import schemas
 def get_or_create(trait: schemas.Trait):
     db_entity = models.Trait.filter(
         models.Trait.name == trait.name
-    ).filter(
-        models.Trait.number == trait.number
     ).first()
     if db_entity:
         return db_entity

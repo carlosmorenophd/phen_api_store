@@ -17,11 +17,12 @@ def find_by_country_number(number: int, country: str):
     ).first()
 
 
-def create(location: schemas.Location):
+def create(location: schemas.LocationCreate):
     db_entity = models.Location.filter(
         models.Location.number == validate_country_number(
             country=location.country, number=location.number)
     ).first()
+    print("Find {}".format(db_entity))
     if db_entity:
         return db_entity
     db_entity = models.Location(
@@ -38,7 +39,9 @@ def create(location: schemas.Location):
         longitude_minutes=location.longitude_minutes,
         altitude=location.altitude,
     )
+    print("Create {}".format(db_entity))
     db_entity.save()
+    print("Created {}".format(db_entity))
     return db_entity
 
 
