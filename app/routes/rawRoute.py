@@ -55,16 +55,6 @@ def search_raw_collections_query(target: customs.EntityTarget):
 
 
 @router.post(
-    "/all/search/v1",
-    response_model=str,
-    dependencies=[Depends(get_db)],
-    deprecated="23-10-02- To delete use /raw_all/trait"
-)
-def get_raw_by_genotype_id(raw_filter: customs.RawAllFilter):
-    return rawService.get_raw_join_all(raw_filter=raw_filter)
-
-
-@router.post(
     "/all/search",
     response_model=str,
     dependencies=[Depends(get_db)],

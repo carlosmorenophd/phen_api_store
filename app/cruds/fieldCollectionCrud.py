@@ -35,7 +35,6 @@ def get_or_create(
 def get_or_create_object(field_collection: models.FieldCollection):
     db_entity = find_by_raw(
         occurrence=field_collection.occurrence,
-        description=field_collection.description,
         agricultural_cycle=field_collection.agricultural_cycle,
         web_file=field_collection.web_file,
         trial=field_collection.trial,
@@ -57,7 +56,6 @@ def get_by_raw(
 ):
     db_entity = find_by_raw(
         occurrence=occurrence,
-        description=description,
         agricultural_cycle=agricultural_cycle,
         web_file=web_file,
         trial=trial,
@@ -78,7 +76,6 @@ def get_by_raw(
 
 def find_by_raw(
     occurrence: int,
-    description: str,
     agricultural_cycle: str,
     web_file: models.WebFile,
     trial: models.Trial,
@@ -97,7 +94,6 @@ def find_by_raw(
     ).where(
         models.FieldCollection.occurrence == occurrence,
         models.FieldCollection.agricultural_cycle == agricultural_cycle,
-        models.FieldCollection.description == description,
         models.WebFile.id == web_file.id,
         models.Trial.id == trial.id,
         models.Location.id == location.id,
