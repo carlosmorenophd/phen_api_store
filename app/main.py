@@ -1,7 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi_pagination import add_pagination
 import uvicorn
-
 import database
 import models
 from schemas import schemas
@@ -18,8 +17,10 @@ from routes import (
     unitRoute,
 )
 from dependencies import get_db
+from os import getenv
+from dotenv import load_dotenv
 
-
+load_dotenv()
 database.db.connect()
 database.db.create_tables(
     [
@@ -55,6 +56,7 @@ app.include_router(rawRoute.router)
 app.include_router(trialRoute.router)
 app.include_router(traitRoute.router)
 app.include_router(unitRoute.router)
+
 
 @app.post(
     "/web_files/",
@@ -120,4 +122,4 @@ def create_variable_ontology(
 add_pagination(app)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=int(getenv("UVICORN_PORT")))
