@@ -1,5 +1,5 @@
-from app import models
-from app.schemas import schemas, customs
+import models
+from schemas import schemas, customs
 
 # TODO: Convertir en dinamica para poder seleccionar con una lista de traits
 # TODO: soportar la unidad dentro de los traits
@@ -19,36 +19,6 @@ query_basic_select = "SELECT raj.id, raj.occurrence, raj.`cycle`, \
 query_basic_from = " FROM raw_all_join raj \
 LEFT JOIN genotype g ON g.id =raj.genotype_id \
 LEFT JOIN location l ON l.id = raj.location_id "
-
-
-def get_raw_all_join_by_id(id: int):
-    """To delete
-
-    Args:
-        id (int): _description_
-
-    Returns:
-        any: return
-    """
-    cursor = models.db.execute_sql(
-        "{}WHERE raj.id = {}; ".format(query_raw_all, id))
-    return cursor
-
-
-def get_raw_join_by_cycle_genotype_id(cycle: str, genotype_id: int):
-    """To delete
-
-    Args:
-        cycle (str): _description_
-        genotype_id (int): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    cursor = models.db.execute_sql(
-        "{} WHERE raj.`cycle` = {} and raj.genotype_id = {} ; "
-        .format(query_raw_all, cycle, str(genotype_id)))
-    return cursor
 
 
 def get_raw_by_id_with_trait(id: int, trait_ids: list[int]):
@@ -117,9 +87,27 @@ def create(raw_collection: schemas.RawCollectionCreate):
                 raw_collection.field_collection_id
             ))
     db_entity = models.RawCollection.filter(
-        models.RawCollection.hash_raw == raw_collection.hash_raw
+        models.RawCollection.field_collection == field_collection,
+    ).filter(
+        models.RawCollection.genotype == genotype
+    ).filter(
+        models.RawCollection.trait == trait
+    ).filter(
+        models.RawCollection.unit == unit
+    ).filter(
+        models.RawCollection.plot == raw_collection.plot
+    ).filter(
+        models.RawCollection.sub_block == raw_collection.sub_block
+    ).filter(
+        models.RawCollection.repetition == raw_collection.repetition
+    ).filter(
+        models.RawCollection.value_data == raw_collection.value_data
+    ).filter(
+        models.RawCollection.gen_number == raw_collection.gen_number
     ).first()
     if db_entity:
+        # print("Remove by raw {} - {} - {} - {}".format(raw_collection, trait.id, field_collection.id, genotype.id))
+        # raise Exception("Error to create raw")
         return db_entity
     db_entity = models.RawCollection(
         field_collection=field_collection,

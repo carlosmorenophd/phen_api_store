@@ -1,5 +1,5 @@
-from app import models
-from app.schemas import schemas
+import models
+from schemas import schemas
 
 
 def create_crop_ontology(crop_ontology: schemas.CropOntology):

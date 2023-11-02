@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas import schemas, customs
-from app.cruds import fieldCollectionEnvironmentCrud
-from app.dependencies import get_db
-from app.services import environmentDataService
+from schemas import schemas, customs
+from cruds import fieldCollectionEnvironmentCrud
+from dependencies import get_db
+from services import environmentDataService
 
 
 router = APIRouter(

@@ -1,8 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends
-from app.schemas import schemas
-from app.cruds import trialCrud
-from app.dependencies import get_db
+from schemas import schemas
+from cruds import trialCrud
+from dependencies import get_db
 
 
 router = APIRouter(
