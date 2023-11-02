@@ -1,7 +1,7 @@
 import os
-from app.schemas import customs, schemas
+from schemas import customs, schemas
 from csv import writer
-from app.cruds import (
+from cruds import (
     fieldCollectionCrud,
     genotypeCrud,
     locationCrud,
@@ -11,7 +11,7 @@ from app.cruds import (
     unitCrud,
     webFileCrud,
 )
-from app.services.MeanRawCountryInstituteService import MeanRawCountryInstitute
+from services.MeanRawCountryInstituteService import MeanRawCountryInstitute
 
 
 def get_raw_join_all_trait(raw_filter: customs.RawAllFilter) -> str:

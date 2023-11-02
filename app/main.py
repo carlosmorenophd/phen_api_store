@@ -1,11 +1,12 @@
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi_pagination import add_pagination
+import uvicorn
 
-from app import database
-from app import models
-from app.schemas import schemas
-from app.cruds import crud, webFileCrud
-from app.routes import (
+import database
+import models
+from schemas import schemas
+from cruds import crud, webFileCrud
+from routes import (
     environmentDefinitionRoute,
     fieldCollectionEnvironmentRoute,
     fieldCollectionRoute,
@@ -16,7 +17,7 @@ from app.routes import (
     trialRoute,
     unitRoute,
 )
-from app.dependencies import get_db
+from dependencies import get_db
 
 
 database.db.connect()
@@ -117,3 +118,6 @@ def create_variable_ontology(
 
 
 add_pagination(app)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
