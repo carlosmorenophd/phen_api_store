@@ -6,6 +6,7 @@
         "fastapi",
         "numero",
         "occurencia",
+        "phenotipyc",
         "pydantic",
         "tipo"
     ],
