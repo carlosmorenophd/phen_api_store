@@ -1,6 +1,6 @@
 import models
 from schemas import schemas
-
+from typing import Union
 
 def find_by_id(id: int):
     try:
@@ -27,13 +27,21 @@ def create(genotype: schemas.Genotype):
     return db_entity
 
 
-def find_by_ids(c_id: int, s_id: int):
-    genotype = models.Genotype.filter(
-        models.Genotype.s_id == s_id
-    ).filter(
-        models.Genotype.c_id == c_id
-    ).first()
-    if not genotype:
+def find_by_ids(c_id: Union[int, None], s_id: Union[int, None]):
+    query = models.Genotype.select()
+    if c_id != None:
+        query = query.where(
+            models.Genotype.c_id == c_id
+        )
+    if s_id != None:
+        query = query.where(
+            models.Genotype.s_id == s_id
+        )
+    if s_id == None and c_id == None:
+        raise ValueError(
+            "You need to pass some value to search")    
+    query = query.execute()
+    if not query:
         raise ValueError(
             "The genotype does not exist {}-{}".format(c_id, s_id))
-    return genotype
+    return query[0]
