@@ -1,10 +1,14 @@
-# DataWarehouse para datos fenotipicos
+# DataWarehouse for phenotipical data
 
-## Enpoint para obtener informacion de las variables fenotipicas
 
-Ejemplo:
+## Get data from crop ontology
+
+This project use the crop ontology to define the traits that can use
+
+For example e use this get method to get data 
+
 ```
-https://cropontology.org/brapi/v1/variables/CO_321:0001235
+GET https://cropontology.org/brapi/v1/variables/CO_321:0001235
 ```
 
 ## Install
@@ -56,4 +60,20 @@ Run image in a container
 
 ```
 docker run -it -d --name dev_api_store -p 8091:8000 --network=net-phenotypic -v ${PWD}:/develop  phen/api_store:00.dev
-```%
+```
+
+
+### About author
+
+
+In collaboration with the [Universidad Autonoma del Estado de Mexico](https://www.uaemex.mx/)  and supported by [CONAHCYT](https://conahcyt.mx/) scholarships, this project was created. For new features, changes, or improvements, please reach out to:
+
+Student, Ph.D.
+
+Juan Carlos Moreno Sanchez
+
+Please contact me at:
+
+<carlos.moreno.phd@gmail.com>
+
+<jcmorenos001@alumno.uaemex.mx>
