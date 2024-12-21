@@ -1,0 +1,48 @@
+services:
+  api:
+    container_name: phen_api_store
+    build:
+      context: api/
+    environment:
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE=${DATABASE}
+      - DATABASE_HOST=phen_database
+      - DATABASE_PORT=3306
+    networks:
+      phen-net:
+    ports:
+      - ${PORT_API}:8000
+    depends_on:
+      - database
+    restart: on-failure
+  
+
+
+  database:
+    container_name: phen_database
+    image: mariadb:10.6.16-focal
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE}
+      - MYSQL_USER=${DATABASE_USERNAME}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+      - ${DATABASE_STORE_DATA_FOLDER}:/var/lib/mysql 
+    networks:
+      phen-net:
+
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - ${PORT_ADMINER}:8080
+    depends_on:
+      - database
+
+
+networks:
+  phen-net:
+    external: true
+    name: phen-net

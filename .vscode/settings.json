@@ -1,9 +1,12 @@
 {
     "cSpell.ignoreWords": [
+        "ADMINER",
         "backref",
         "ciclo",
         "dotenv",
         "fastapi",
+        "healthcheck",
+        "mysqladmin",
         "numero",
         "occurencia",
         "phen",

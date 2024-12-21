@@ -9,7 +9,6 @@ db_state_default = {"closed": None, "conn": None,
                     "ctx": None, "transactions": None}
 db_state = ContextVar("db_state", default=db_state_default.copy())
 
-
 class PeeweeConnectionState(_ConnectionState):
     def __init__(self, **kwargs):
         super().__setattr__("_state", db_state)
@@ -26,7 +25,7 @@ db = MySQLDatabase(
     getenv("DATABASE"),
     host=getenv("DATABASE_HOST"),
     password=getenv("DATABASE_PASSWORD"),
-    port=int(getenv("DATABASE_SOCKET")),
+    port=int(getenv("DATABASE_PORT")),
     user=getenv("DATABASE_USERNAME"),
 )
 
