@@ -40,7 +40,8 @@ services:
       - ${PORT_ADMINER}:8080
     depends_on:
       - database
-
+    networks:
+      phen-net:
 
 networks:
   phen-net:
