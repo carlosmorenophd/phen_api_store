@@ -12,7 +12,8 @@
         "phen",
         "phenotipyc",
         "pydantic",
-        "tipo"
+        "tipo",
+        "venv"
     ],
     "cSpell.words": [
         "uvicorn"
